@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greek Warriors: The Lost Medallion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sky:#87CEEB; --med:#2878B5; --turq:#48C9B0; --gold:#FFD166;
+  --beige:#F5E6C8; --cream:#FFF9EC; --olive:#9BBF75; --coral:#FF956B;
+  --ink:#355070; --ink2:#5b6b85; --ok:#5fb37a; --no:#e06a4b;
+  --terra:#C96E4A; --sand:#E8D5A8; --marble:#F3EEE2; --wine:#7d2b3e;
+  --head:'Fredoka',system-ui,sans-serif;
+  --body:'Nunito',system-ui,sans-serif;
+  --shadow:0 10px 0 rgba(40,120,181,.18),0 16px 30px rgba(40,120,181,.22);
+}
+html,body{height:100%}
+body{font-family:var(--body);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;
+  background:linear-gradient(180deg,#9fdcf0 0%,var(--sky) 40%,#aee3d6 100%);background-attachment:fixed;overflow-x:hidden}
+h1,h2,h3{font-family:var(--head);font-weight:600;color:var(--med);line-height:1.1}
+button{font-family:var(--body);cursor:pointer}
+::selection{background:var(--gold)}
+
+#app{min-height:100vh;display:flex;flex-direction:column}
+.screen{flex:1;display:flex;flex-direction:column;animation:pop .5s cubic-bezier(.2,.9,.3,1.25) both}
+@keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+.wrap{width:100%;max-width:1080px;margin:0 auto;padding:22px 18px 46px}
+.center{text-align:center}
+.hidden{display:none!important}
+
+/* clouds decoration */
+.clouds{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.cloud{position:absolute;background:#fff;border-radius:50px;opacity:.75;filter:blur(1px)}
+.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%}
+.c1{width:120px;height:34px;top:8%;left:-140px;animation:drift 46s linear infinite}
+.c2{width:90px;height:26px;top:22%;left:-120px;animation:drift 60s linear infinite;animation-delay:-20s}
+.c3{width:150px;height:40px;top:5%;left:-180px;animation:drift 72s linear infinite;animation-delay:-40s}
+.cloud::before{width:50%;height:160%;top:-50%;left:14%}
+.cloud::after{width:38%;height:150%;top:-46%;right:16%}
+@keyframes drift{to{transform:translateX(130vw)}}
+#app,.topbar{position:relative;z-index:1}
+/* ===== GREEK-THEMED BACKGROUND ===== */
+.greekbg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.greekbg .gsun{position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,#fff3cf 0%,#ffe79b55 45%,transparent 70%)}
+.meander{position:absolute;left:0;right:0;height:38px;opacity:.28;background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='40'%20height='40'%3E%3Cpath%20d='M0,6H40M8,6V30H32V16H18V23'%20fill='none'%20stroke='%23C96E4A'%20stroke-width='4'/%3E%3C/svg%3E");background-size:40px 38px;background-repeat:repeat-x}
+.meander-top{top:0}
+.meander-bottom{bottom:0;transform:scaleY(-1)}
+.g-col{position:absolute;bottom:34px;top:48px;width:84px;opacity:.16}
+.g-col svg{width:100%;height:100%;display:block}
+.g-col.l{left:1.5%}.g-col.r{right:1.5%}
+.g-temple{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);width:min(760px,88vw);opacity:.12}
+.g-temple svg{width:100%;height:auto;display:block}
+.g-urn{position:absolute;width:70px;opacity:.14}
+.g-urn svg{width:100%;height:auto}
+.g-urn.u1{bottom:60px;left:11%}
+.g-urn.u2{bottom:70px;right:11%;transform:scaleX(-1)}
+@media(max-width:720px){.g-col,.g-urn{display:none}.g-temple{opacity:.1}}
+
+/* ===== buttons ===== */
+.btn{font-family:var(--head);font-size:1.15rem;font-weight:600;border:none;border-radius:50px;
+  padding:15px 34px;color:#fff;background:linear-gradient(180deg,#ffb84d,var(--coral));
+  box-shadow:0 6px 0 #d96a44,0 12px 20px rgba(255,149,107,.4);transition:.12s;letter-spacing:.3px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 0 #d96a44,0 16px 26px rgba(255,149,107,.5)}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 #d96a44}
+.btn.blue{background:linear-gradient(180deg,#4a9fe0,var(--med));box-shadow:0 6px 0 #1b5a8e,0 12px 20px rgba(40,120,181,.4)}
+.btn.blue:hover{box-shadow:0 8px 0 #1b5a8e,0 16px 26px rgba(40,120,181,.5)}
+.btn.blue:active{box-shadow:0 2px 0 #1b5a8e}
+.btn.green{background:linear-gradient(180deg,#b6d98f,var(--olive));box-shadow:0 6px 0 #6f9150}
+.btn.green:active{box-shadow:0 2px 0 #6f9150}
+.btn.gold{background:linear-gradient(180deg,#ffe08a,var(--gold));color:#8a6a1f;box-shadow:0 6px 0 #d1a53a}
+.btn.gold:active{box-shadow:0 2px 0 #d1a53a}
+.btn.sm{font-size:.95rem;padding:10px 20px;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.btn.sm:active{box-shadow:0 1px 0 rgba(0,0,0,.2)}
+.btn:disabled{filter:grayscale(.5) opacity(.6);cursor:not-allowed}
+.btnrow{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:26px}
+/* ===== topbar ===== */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:10px 18px;background:#fff9ecd9;backdrop-filter:blur(6px);border-bottom:4px solid var(--gold);
+  position:sticky;top:0;z-index:40}
+.topbar .brand{font-family:var(--head);color:var(--med);font-size:1.05rem}
+.topbar .brand small{display:block;font-size:.72rem;color:var(--coral);font-weight:700}
+.tbright{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.scorechip{font-family:var(--head);background:var(--gold);color:#8a6a1f;padding:6px 14px;border-radius:30px;font-size:.95rem;box-shadow:0 3px 0 #d1a53a}
+.meds{display:flex;gap:4px}
+.meds .m{width:26px;height:26px;opacity:.28;filter:grayscale(1)}
+.meds .m.on{opacity:1;filter:none;animation:bounce .6s}
+@keyframes bounce{0%{transform:scale(0) rotate(-40deg)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+
+/* ===== panels ===== */
+.panel{background:var(--cream);border:4px solid #fff;border-radius:28px;padding:24px 26px;box-shadow:var(--shadow)}
+.panel.beige{background:var(--beige)}
+.bubblecard{background:#fff;border-radius:22px;padding:18px 20px;box-shadow:0 6px 0 rgba(40,120,181,.12)}
+.sectitle{text-align:center;margin-bottom:10px}
+.sectitle .eyebrow{display:inline-block;background:var(--turq);color:#fff;font-family:var(--head);
+  padding:5px 16px;border-radius:30px;font-size:.82rem;letter-spacing:.5px;box-shadow:0 3px 0 #2f9c86}
+.sectitle h2{font-size:clamp(1.5rem,4.5vw,2.4rem);margin-top:10px}
+.lead{max-width:720px;margin:6px auto 0;text-align:center;color:var(--ink2);font-weight:600;font-size:1.05rem}
+
+/* ===== Alexios guide ===== */
+.guide{display:flex;align-items:flex-end;gap:14px;margin:4px 0 18px}
+.guide .ava{width:96px;flex:none;filter:drop-shadow(0 6px 6px rgba(40,120,181,.25))}
+.guide .ava svg{width:100%;height:auto;display:block}
+.speech{position:relative;background:#fff;border:3px solid var(--gold);border-radius:20px;padding:14px 18px;
+  font-weight:700;color:var(--ink);font-size:1.05rem;box-shadow:0 5px 0 rgba(255,209,102,.5);flex:1}
+.speech::after{content:'';position:absolute;left:-14px;bottom:18px;border:8px solid transparent;border-right-color:var(--gold)}
+.speech::before{content:'';position:absolute;left:-9px;bottom:18px;border:8px solid transparent;border-right-color:#fff;z-index:1}
+@media(max-width:560px){.guide{flex-direction:column;align-items:center}.guide .ava{width:120px}.speech::after,.speech::before{display:none}}
+
+/* ===== opening ===== */
+#opening{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden}
+.open-scene{position:relative;z-index:2;max-width:860px;padding:30px 20px}
+.titlecard{background:#fff9ecee;border:5px solid var(--gold);border-radius:34px;padding:26px 30px;box-shadow:var(--shadow);display:inline-block}
+.gametitle{font-size:clamp(2rem,7vw,4rem);color:var(--coral);text-shadow:3px 3px 0 #fff,6px 6px 0 rgba(40,120,181,.18);letter-spacing:1px;line-height:1}
+.gametitle .l2{color:var(--med);display:block}
+.subtitle{font-family:var(--head);color:var(--turq);font-size:clamp(1rem,3vw,1.5rem);margin-top:8px}
+.open-hero{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:22px 0 10px;flex-wrap:wrap}
+.open-hero .alx{width:150px}.open-hero .ship{width:230px}
+.open-hero svg{width:100%;height:auto;display:block}
+.storybox{background:#fff;border-radius:22px;padding:16px 20px;max-width:620px;margin:16px auto 0;
+  font-weight:700;color:var(--ink);box-shadow:0 6px 0 rgba(40,120,181,.12);font-size:1.05rem}
+.waves{position:absolute;left:0;right:0;bottom:0;height:120px;z-index:1}
+/* ===== map ===== */
+.mapstage{position:relative;border:5px solid #fff;border-radius:28px;overflow:hidden;box-shadow:var(--shadow)}
+.mapstage svg{display:block;width:100%;height:auto}
+.cp-hit{cursor:pointer}
+.cp-hit.lock{cursor:not-allowed}
+.progwrap{display:flex;align-items:center;gap:12px;margin-top:16px;justify-content:center;flex-wrap:wrap}
+.progbar{flex:1;max-width:420px;height:18px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.12)}
+.progbar i{display:block;height:100%;background:linear-gradient(90deg,var(--turq),var(--gold));transition:width .6s}
+.progtxt{font-family:var(--head);color:var(--med)}
+.maphint{text-align:center;margin-top:12px;font-weight:700;color:var(--ink2)}
+
+/* ===== mission banner ===== */
+.mbanner{border-radius:24px;overflow:hidden;position:relative;margin-bottom:18px;box-shadow:var(--shadow);border:4px solid #fff}
+.mbanner svg{display:block;width:100%;height:auto}
+.mbanner .tag{position:absolute;top:14px;left:14px;background:var(--coral);color:#fff;font-family:var(--head);padding:6px 16px;border-radius:30px;box-shadow:0 3px 0 #d96a44}
+
+/* ===== quiz ===== */
+.qmeta{display:flex;justify-content:space-between;align-items:center;font-family:var(--head);color:var(--med);margin-bottom:8px}
+.qbar{height:14px;background:#fff;border-radius:20px;overflow:hidden;margin-bottom:20px;box-shadow:inset 0 2px 4px rgba(0,0,0,.1)}
+.qbar i{display:block;height:100%;background:linear-gradient(90deg,var(--turq),var(--gold));transition:width .4s}
+.qcard{background:#fff;border-radius:24px;padding:22px 24px;box-shadow:0 8px 0 rgba(40,120,181,.12)}
+.picbox{background:linear-gradient(180deg,#dff2fb,#c7e8f6);border-radius:20px;padding:16px;display:grid;place-items:center;margin-bottom:16px}
+.picbox svg{width:100%;max-width:230px;height:170px}
+.qtext{font-family:var(--head);font-size:1.3rem;color:var(--ink);margin-bottom:16px;line-height:1.25}
+.opts{display:grid;gap:12px}
+.opt{display:flex;gap:14px;align-items:center;text-align:left;padding:14px 16px;border:3px solid #e3eaf2;border-radius:18px;
+  background:#fff;color:var(--ink);font-weight:700;font-size:1.08rem;transition:.12s;width:100%}
+.opt:hover:not(.lock){border-color:var(--turq);background:#f0fbf8;transform:translateY(-2px)}
+.opt .k{flex:none;width:34px;height:34px;border-radius:50%;background:var(--sky);color:#fff;font-family:var(--head);display:grid;place-items:center;font-size:1.05rem}
+.opt.lock{cursor:default}
+.opt.correct{border-color:var(--ok);background:#eafaef}.opt.correct .k{background:var(--ok)}
+.opt.wrong{border-color:var(--no);background:#fdeee9}.opt.wrong .k{background:var(--no)}
+.opts.grid2{grid-template-columns:1fr 1fr}
+@media(max-width:560px){.opts.grid2{grid-template-columns:1fr}}
+/* feedback bubble (Alexios) */
+.fb{margin-top:18px;border-radius:20px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;animation:pop .35s both}
+.fb .ava{width:64px;flex:none}.fb .ava svg{width:100%}
+.fb.ok{background:#eafaef;border:3px solid var(--ok)}
+.fb.no{background:#fdeee9;border:3px solid var(--no)}
+.fb h4{font-family:var(--head);font-size:1.15rem;margin-bottom:4px}
+.fb.ok h4{color:#3f8f58}.fb.no h4{color:#c2503a}
+.fb .why{margin-top:6px;font-size:.95rem;color:var(--ink2)}
+.fb .why b{color:var(--med)}
+.navrow{display:flex;justify-content:space-between;gap:12px;margin-top:20px;flex-wrap:wrap;align-items:center}
+
+/* ===== vocab / info cards ===== */
+.cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:8px}
+.vcard{background:#fff;border:4px solid var(--gold);border-radius:22px;overflow:hidden;box-shadow:0 8px 0 rgba(255,209,102,.4);transition:.15s;cursor:pointer}
+.vcard:hover{transform:translateY(-4px)}
+.vcard .pic{background:linear-gradient(180deg,#dff2fb,#c7e8f6);display:grid;place-items:center;padding:16px}
+.vcard .pic svg{width:100%;max-width:120px;height:120px}
+.vcard .body{padding:14px 16px}
+.vcard .nm{font-family:var(--head);color:var(--coral);font-size:1.3rem}
+.vcard .gk{font-size:.8rem;color:var(--turq);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.vcard .desc{font-weight:600;color:var(--ink2);font-size:.96rem}
+.vcard .seen{display:inline-block;margin-top:8px;color:var(--ok);font-weight:800;font-size:.85rem;opacity:0}
+.vcard.seen-on .seen{opacity:1}
+
+/* ===== matching ===== */
+.match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:8px}
+@media(max-width:620px){.match-wrap{grid-template-columns:1fr}}
+.mcol h3{font-family:var(--head);color:var(--med);text-align:center;margin-bottom:10px}
+.tile{padding:14px 16px;border:3px solid var(--turq);border-radius:18px;background:#fff;font-weight:800;color:var(--ink);
+  margin-bottom:12px;text-align:center;transition:.12s;box-shadow:0 5px 0 rgba(72,201,176,.35)}
+.tile.pick{background:var(--turq);color:#fff;transform:translateY(-2px)}
+.tile.done{opacity:.45;pointer-events:none;border-color:var(--ok);box-shadow:none}
+.dslot{padding:14px 16px;border:3px dashed #bcd6c9;border-radius:18px;background:#fff;font-weight:700;color:var(--ink2);margin-bottom:12px;transition:.12s}
+.dslot.pick{border-color:var(--coral);background:#fff6f1}
+.dslot.done{border-style:solid;border-color:var(--ok);background:#eafaef;color:var(--ink)}
+.dslot .tag{display:inline-block;margin-top:6px;background:var(--ok);color:#fff;font-family:var(--head);padding:3px 12px;border-radius:20px;font-size:.9rem}
+
+/* ===== phalanx puzzle ===== */
+.pzrow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.slotbox{width:52px;height:60px;border:3px dashed #bcd6c9;border-radius:12px;background:#fff;display:grid;place-items:center;transition:.15s}
+.slotbox.full{border-style:solid;border-color:var(--olive);background:#f1f7e9}
+.slotbox svg{width:42px;height:50px}
+.tray{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.troop{width:52px;height:60px;border:none;background:transparent;transition:.12s}
+.troop svg{width:100%;height:100%}
+.troop:hover{transform:translateY(-3px) scale(1.05)}
+.troop.used{opacity:.25;pointer-events:none}
+/* ===== click-hotspot activity (defensive positions) ===== */
+.hotstage{position:relative;border-radius:20px;overflow:hidden;box-shadow:0 8px 0 rgba(40,120,181,.12);border:4px solid #fff}
+.hotstage svg{display:block;width:100%;height:auto}
+.hs{cursor:pointer}
+.hotlist{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.hotlist .hl{background:#fff;border:3px solid #e3eaf2;border-radius:30px;padding:8px 16px;font-weight:800;color:var(--ink2)}
+.hotlist .hl.on{border-color:var(--ok);background:#eafaef;color:#3f8f58}
+.hotlist .hl.on::before{content:'\2605 '}
+
+/* ===== sorting bins (weapon discovery) ===== */
+.sorttray{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0 16px}
+.sortitem{width:110px;background:#fff;border:3px solid var(--gold);border-radius:18px;padding:8px;text-align:center;transition:.12s;box-shadow:0 5px 0 rgba(255,209,102,.4)}
+.sortitem svg{width:70px;height:64px}
+.sortitem .nm{font-family:var(--head);color:var(--coral);font-size:.95rem}
+.sortitem.pick{background:var(--gold);transform:translateY(-3px)}
+.sortitem.used{opacity:.3;pointer-events:none}
+.bins{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:620px){.bins{grid-template-columns:1fr}}
+.bin{min-height:130px;border:3px dashed #9cc;border-radius:20px;background:#fff;padding:12px;text-align:center;transition:.12s}
+.bin.pick{border-color:var(--coral);background:#fff6f1}
+.bin h3{font-family:var(--head);font-size:1rem;margin-bottom:8px}
+.bin .drop{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.bin .drop .ch{background:var(--turq);color:#fff;font-weight:800;padding:4px 10px;border-radius:14px;font-size:.82rem}
+
+/* ===== journal ===== */
+.jgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-top:8px}
+.jcard{background:#fff;border:4px solid #fff;border-radius:22px;overflow:hidden;box-shadow:0 8px 0 rgba(40,120,181,.12);cursor:pointer;transition:.15s;position:relative}
+.jcard:hover{transform:translateY(-4px)}
+.jcard.locked{filter:grayscale(.85) opacity(.55)}
+.jcard .pic{background:linear-gradient(180deg,#dff2fb,#c7e8f6);display:grid;place-items:center;padding:14px}
+.jcard .pic svg{width:92px;height:92px}
+.jcard .nm{font-family:var(--head);color:var(--med);text-align:center;padding:10px 8px;font-size:1.05rem}
+.jcard .lk{position:absolute;top:8px;right:10px;font-size:1.2rem}
+
+/* ===== results ===== */
+.resultwrap{max-width:640px;margin:0 auto;text-align:center}
+.resulthero{display:flex;align-items:flex-end;justify-content:center;gap:6px;margin-bottom:6px}
+.resulthero .alx{width:150px}.resulthero svg{width:100%;height:auto}
+.scorebig{font-family:var(--head);font-size:3rem;color:var(--coral);line-height:1}
+.scorebig small{font-size:1.1rem;color:var(--ink2)}
+.rankbox{background:linear-gradient(180deg,#ffe08a,var(--gold));border-radius:24px;padding:18px;margin:16px 0;box-shadow:0 8px 0 #d1a53a}
+.rankbox .rk{font-family:var(--head);font-size:2rem;color:#8a6a1f}
+.medtray{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.medtray .m{width:60px}.medtray .m.off{opacity:.25;filter:grayscale(1)}
+.reflect{background:#fff;border-radius:20px;padding:16px 18px;text-align:left;font-weight:700;color:var(--ink);box-shadow:0 6px 0 rgba(40,120,181,.12);margin:14px 0}
+.stars{font-size:1.8rem;letter-spacing:.2em;color:var(--gold)}
+.stars .off{color:#dfe7ef}
+
+/* toast + confetti */
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);z-index:120;
+  background:#fff;border:3px solid var(--gold);color:var(--med);font-family:var(--head);padding:12px 22px;border-radius:30px;
+  box-shadow:0 8px 20px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:.35s}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.conf{position:fixed;inset:0;pointer-events:none;z-index:110;overflow:hidden}
+.conf i{position:absolute;top:-20px;width:11px;height:14px;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(540deg)}}
+
+/* medallion popup */
+.pop{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(40,80,112,.5);backdrop-filter:blur(3px)}
+.pop.on{display:flex;animation:pop .3s both}
+.pop .box{background:var(--cream);border:5px solid var(--gold);border-radius:30px;padding:26px 28px;max-width:440px;text-align:center;box-shadow:var(--shadow);position:relative;animation:pop .45s cubic-bezier(.2,.9,.3,1.3) both}
+.pop .box .medimg{width:140px;margin:0 auto 6px;animation:spin 1s ease}
+@keyframes spin{from{transform:rotateY(-540deg) scale(.4)}to{transform:none}}
+.pop .x{position:absolute;top:10px;right:16px;font-size:1.8rem;border:none;background:none;color:var(--ink2);cursor:pointer}
+/* ===== OVERRIDE / COMPLETE STYLES ===== */
+html,body{margin:0;min-height:100%;font-family:var(--body);color:var(--ink);background:linear-gradient(180deg,#bfe9ff 0%,#e9f7ff 40%,var(--cream) 100%);background-attachment:fixed}
+*{box-sizing:border-box}
+.clouds{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.cloud{position:absolute;background:#fff;border-radius:50px;opacity:.75;filter:blur(1px)}
+.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%}
+.cloud.c1{width:120px;height:34px;top:8%;left:-140px;animation:drift 38s linear infinite}
+.cloud.c2{width:90px;height:26px;top:22%;left:-140px;animation:drift 50s linear infinite;animation-delay:-10s}
+.cloud.c3{width:150px;height:40px;top:5%;left:-180px;animation:drift 62s linear infinite;animation-delay:-25s}
+.cloud::before{width:50%;height:160%;top:-50%;left:12%}
+.cloud::after{width:40%;height:150%;top:-40%;right:14%}
+@keyframes drift{to{left:110%}}
+#app{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:0 14px 40px}
+.screen{animation:fade .4s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
+/* topbar */
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);border:3px solid #fff;box-shadow:0 6px 18px rgba(40,120,181,.18);border-radius:0 0 20px 20px;padding:10px 16px;margin:0 -14px 18px}
+.tbtn{font-family:var(--head);font-size:1rem;background:var(--turq);color:#fff;border:none;border-radius:14px;padding:8px 14px;cursor:pointer;box-shadow:0 4px 0 #2fa894}
+.tbtn:active{transform:translateY(2px);box-shadow:0 2px 0 #2fa894}
+.topbar .sc{font-family:var(--head);background:var(--gold);color:#7a5b12;padding:6px 14px;border-radius:14px;font-size:1.05rem}
+.topbar .sc b{font-size:1.3rem}
+.sclbl{font-family:var(--body);font-weight:700;font-size:.72rem;opacity:.8;display:block;line-height:1}
+.topbar .med{display:flex;align-items:center;gap:6px;margin-left:auto}
+#medWrap{display:flex;gap:4px}
+.medchip{font-size:1.2rem;filter:grayscale(1);opacity:.45;transition:.3s}
+.medchip.on{filter:none;opacity:1;transform:scale(1.15)}
+/* buttons */
+.btn{font-family:var(--head);font-size:1.1rem;background:var(--med);color:#fff;border:none;border-radius:16px;padding:12px 22px;cursor:pointer;box-shadow:0 5px 0 #1f5d90;transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #1f5d90}
+.btn:disabled{background:#b9c6d6;box-shadow:0 5px 0 #96a6ba;cursor:not-allowed}
+.btn.big{font-size:1.4rem;padding:16px 34px;border-radius:22px}
+.btn.ghost{background:var(--turq);box-shadow:0 5px 0 #2fa894}
+.btn.ghost:active{box-shadow:0 2px 0 #2fa894}
+.btn.warn{background:var(--coral);box-shadow:0 5px 0 #d96a44}
+.btn.warn:active{box-shadow:0 2px 0 #d96a44}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+/* guide / speech */
+.guide{display:flex;align-items:flex-start;gap:14px;background:#fff;border:3px solid var(--sky);border-radius:22px;padding:14px 16px;box-shadow:0 8px 22px rgba(40,120,181,.14);margin:0 0 18px}
+.guide .gav{flex:0 0 96px;width:96px}
+.guide .gav svg{width:100%;height:auto;display:block}
+.guide.sm .gav{flex-basis:70px;width:70px}
+.guide .bubble{position:relative;background:var(--cream);border:2px dashed var(--turq);border-radius:18px;padding:12px 16px;font-size:1.05rem;line-height:1.5;flex:1}
+.guide .bubble.big{font-size:1.15rem}
+.guide .bubble b{color:var(--med)}
+/* opening */
+.opening{text-align:center;padding-top:20px}
+.open-hero{position:relative;background:linear-gradient(180deg,#fffdf7,var(--marble));border:5px solid #fff;border-radius:30px;box-shadow:0 16px 46px rgba(40,120,181,.24);padding:30px 24px 32px;max-width:660px;margin:0 auto;overflow:hidden}
+.open-hero::before,.open-hero::after{content:'';position:absolute;left:0;right:0;height:22px;background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='40'%20height='40'%3E%3Cpath%20d='M0,6H40M8,6V30H32V16H18V23'%20fill='none'%20stroke='%23C96E4A'%20stroke-width='4'/%3E%3C/svg%3E");background-size:30px 22px;background-repeat:repeat-x;opacity:.55}
+.open-hero::before{top:0}
+.open-hero::after{bottom:0;transform:scaleY(-1)}
+.open-ship{width:230px;margin:0 auto -6px;animation:bob 3s ease-in-out infinite}
+.open-ship svg{width:100%;height:auto}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-8px) rotate(1deg)}}
+.title{font-family:var(--head);font-size:3rem;margin:.1em 0 0;color:var(--med);letter-spacing:1px;text-shadow:3px 3px 0 var(--gold)}
+.subt{font-family:var(--head);font-size:1.5rem;margin:.1em 0 .5em;color:var(--coral)}
+.alx-big{width:170px;margin:4px auto 10px}
+.alx-big svg{width:100%;height:auto}
+.bubble.big{display:inline-block;background:var(--cream);border:2px dashed var(--turq);border-radius:20px;padding:14px 18px;font-size:1.08rem;line-height:1.55;max-width:540px;margin-bottom:18px}
+.bubble.big b{color:var(--med)}
+.hint{font-size:.9rem;color:var(--ink2);margin-top:14px}
+.era{display:inline-block;font-family:var(--head);color:var(--wine);background:#fff;border:2px solid var(--terra);border-radius:999px;padding:4px 14px;font-size:.82rem;margin:2px 0 6px;letter-spacing:.5px}
+.histfact{text-align:left;background:linear-gradient(180deg,#fff,var(--sand));border:3px solid var(--terra);border-radius:18px;padding:14px 16px 14px 54px;position:relative;max-width:560px;margin:14px auto 0}
+.histfact::before{content:'🏛️';position:absolute;left:14px;top:12px;font-size:1.7rem}
+.histfact .hf-t{font-family:var(--head);color:var(--wine);font-size:.95rem;margin-bottom:3px}
+.histfact p{font-size:.95rem;line-height:1.5;color:var(--ink);margin:0}
+.histfact b{color:var(--terra)}
+/* mission header */
+.misshd{text-align:center;margin:6px 0 16px}
+.misstag{display:inline-block;font-family:var(--head);background:var(--turq);color:#fff;padding:5px 16px;border-radius:30px;font-size:.95rem;box-shadow:0 4px 0 #2fa894}
+.misstag.gold{background:var(--gold);color:#7a5b12;box-shadow:0 4px 0 #d1a53a}
+.misstitle{font-family:var(--head);font-size:2rem;color:var(--med);margin:.3em 0}
+.stagebox{background:#fff;border:3px solid #fff;border-radius:26px;box-shadow:0 12px 34px rgba(40,120,181,.16);padding:22px}
+.intro{text-align:center}
+.stginfo{font-size:1.05rem;line-height:1.5;background:var(--cream);border-radius:16px;padding:12px 16px;margin:0 0 16px}
+.stginfo b{color:var(--med)}
+.infogrid{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.infogrid.g4 .infobox{flex-basis:160px}
+.infobox{flex:1 1 160px;max-width:200px;background:var(--cream);border:2px solid var(--sky);border-radius:18px;padding:14px;text-align:center}
+.infobox svg{width:84px;height:84px}
+.infobox p{margin:6px 0 0;font-weight:700;font-size:.95rem}
+.terr{height:60px;border-radius:12px;margin-bottom:4px}
+.terr.flat{background:linear-gradient(180deg,#cfe8a3,#9BBF75)}
+.terr.hill{background:linear-gradient(180deg,#9BBF75,#7fa557);clip-path:polygon(0 100%,15% 55%,32% 80%,50% 35%,68% 70%,85% 45%,100% 100%)}
+.terr.narrow{background:linear-gradient(90deg,#9aa0a6 0 32%,#9fe0d6 32% 68%,#9aa0a6 68% 100%)}
+/* map */
+.mapwrap{text-align:center}
+.maphd{text-align:left}
+.progbar{position:relative;height:26px;background:#fff;border:3px solid var(--sky);border-radius:20px;overflow:hidden;margin:0 0 14px;box-shadow:inset 0 2px 6px rgba(0,0,0,.08)}
+.progfill{height:100%;background:linear-gradient(90deg,var(--turq),var(--gold));transition:width .6s ease;border-radius:20px}
+.proglbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--head);font-size:.9rem;color:#355070}
+.mapsvg{background:#fff;border:3px solid #fff;border-radius:24px;box-shadow:0 12px 30px rgba(40,120,181,.16);padding:8px;overflow:hidden}
+.mapsvg svg{width:100%;height:auto;display:block}
+.pin{transition:transform .2s}
+.pin .pinbg{fill:#fff;stroke:#2878B5;stroke-width:4}
+.pin .pinring{fill:none;stroke:#FFD166;stroke-width:3;stroke-dasharray:3 5}
+.pin .pinnum{font-family:var(--head);font-size:26px;fill:var(--med);text-anchor:middle;font-weight:700}
+.pin.open .pinbg{fill:#fff}
+.pin.open{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.pin.done .pinbg{fill:#FFF3C6;stroke:#FFD166}
+.pin.done .pinring{stroke:#5fb37a}
+.pin.lock .pinbg{fill:#dbe3ec;stroke:#9fb0c2}
+.pin.lock .pinnum{fill:#8296ab;font-size:20px}
+#shipM{transition:transform 1s ease}
+.maplegend{margin-top:12px;font-family:var(--head);font-size:.95rem;color:var(--ink2);display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.maplegend a{color:var(--med);cursor:pointer;text-decoration:underline}
+/* quiz */
+.qcard{}
+.qprog{font-family:var(--head);color:var(--turq);font-size:1rem;margin-bottom:8px}
+.qimg{text-align:center;margin:0 0 10px}
+.qimg svg{width:120px;height:120px;background:var(--cream);border-radius:18px;padding:8px;border:2px solid var(--sky)}
+.qtext{font-family:var(--head);font-size:1.3rem;line-height:1.35;margin:0 0 14px;color:var(--ink)}
+.qtext b{color:var(--med)}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{font-family:var(--body);font-weight:700;font-size:1.08rem;text-align:left;background:#fff;border:3px solid var(--sky);border-radius:16px;padding:14px 16px;cursor:pointer;transition:.15s}
+.opt:hover{background:var(--cream);transform:translateX(3px)}
+.opt.right{background:#e3f6e9;border-color:var(--ok);color:#2d7a4b}
+.opt.wrong{background:#fde6df;border-color:var(--no);color:#b44}
+.opt.locked{cursor:default}
+.opt.locked:hover{transform:none}
+.qnav{margin-top:16px;text-align:right}
+.qfb{margin-top:14px}
+.fb{display:flex;gap:12px;align-items:center;border-radius:16px;padding:12px 14px;font-size:1rem;line-height:1.45;animation:fade .3s}
+.fb svg{width:60px;height:60px;flex:0 0 60px}
+.fb.good{background:#e3f6e9;border:2px solid var(--ok)}
+.fb.bad{background:#fff3e6;border:2px solid var(--coral)}
+.fb b{color:var(--med)}
+/* activity shared */
+.activity h3{font-family:var(--head);font-size:1.4rem;color:var(--med);margin:0 0 8px;text-align:center}
+.hsfb{text-align:center;font-size:1.05rem;margin:14px 0 4px;min-height:24px}
+.hsfb b{color:var(--med)}
+.ok{color:#2d7a4b;font-weight:800}
+.no{color:var(--no);font-weight:800}
+/* hotspot */
+.scene{position:relative;max-width:460px;margin:0 auto;border-radius:18px;overflow:hidden;border:3px solid var(--sky)}
+.scene .scenebg{display:block;width:100%;height:auto}
+.spotlayer{position:absolute;inset:0;width:100%;height:100%}
+.spot{cursor:pointer}
+.spot .spotc{fill:#fff;opacity:.55;stroke:var(--med);stroke-width:3;stroke-dasharray:4 4}
+.spot text{text-anchor:middle;font-family:var(--head);font-size:24px;fill:var(--med)}
+.spot:hover .spotc{opacity:.8}
+.spot.sel .spotc{fill:var(--gold);opacity:.95;stroke:#d1a53a}
+.spot.good .spotc{fill:#5fb37a;opacity:.95;stroke:#2d7a4b;stroke-dasharray:none}
+.spot.good text{fill:#fff}
+.spot.bad .spotc{fill:var(--no);opacity:.9}
+.spot.bad text{fill:#fff}
+/* sort */
+.items{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:16px}
+.item{font-family:var(--head);font-size:1.05rem;background:var(--cream);border:3px solid var(--gold);border-radius:14px;padding:10px 16px;cursor:pointer}
+.item.active{background:var(--gold);transform:scale(1.05)}
+.item.used{opacity:.3}
+.bins{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.bin{flex:1 1 150px;max-width:220px;background:#f3f8ff;border:3px dashed var(--med);border-radius:18px;padding:10px;cursor:pointer;min-height:120px}
+.bin:hover{background:#e7f1ff}
+.binhd{font-family:var(--head);text-align:center;color:var(--med);margin-bottom:8px;font-size:1.05rem}
+.bindrop{display:flex;flex-direction:column;gap:6px}
+.chip{font-family:var(--head);background:var(--turq);color:#fff;border:none;border-radius:12px;padding:8px;cursor:pointer}
+/* vocab */
+.vcards{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.vcard{width:150px;height:170px;perspective:800px;cursor:pointer}
+.vinner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.vcard.flip .vinner{transform:rotateY(180deg)}
+.vfront,.vback{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center}
+.vfront{background:var(--cream);border:3px solid var(--turq)}
+.vfront svg{width:70px;height:70px}
+.vfront b{font-family:var(--head);color:var(--med);font-size:1.2rem;margin-top:4px}
+.vtap{font-size:.75rem;color:var(--ink2);margin-top:6px}
+.vback{background:var(--med);color:#fff;transform:rotateY(180deg);font-size:.98rem;line-height:1.4;font-weight:700}
+/* match */
+.matchwrap{display:flex;gap:16px;justify-content:center}
+.mcol{display:flex;flex-direction:column;gap:10px;flex:1;max-width:260px}
+.mitem{font-family:var(--body);font-weight:700;font-size:1rem;background:#fff;border:3px solid var(--sky);border-radius:14px;padding:12px;cursor:pointer;transition:.15s}
+.mitem.lft{border-color:var(--med)}
+.mitem.rgt{border-color:var(--coral)}
+.mitem.sel{background:var(--gold);border-color:#d1a53a}
+.mitem.ok{background:#e3f6e9;border-color:var(--ok);color:#2d7a4b;cursor:default}
+.mitem.shake{animation:shk .4s}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* phalanx */
+.phax{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;background:#eaf6f3;border-radius:16px;padding:14px}
+.slot{width:64px;height:92px;border-radius:12px;border:3px dashed #9fb0c2;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:2px}
+.slot svg{width:100%;height:100%}
+.slot.empty .plus{font-family:var(--head);font-size:2rem;color:#9fb0c2}
+.slot.empty:hover{background:var(--cream);border-color:var(--gold)}
+.slot.full{border-style:solid;border-color:var(--turq);background:#eafaf6;cursor:default}
+/* done card */
+.done-card{text-align:center}
+.done-card .medimg{width:140px;margin:0 auto 6px;animation:pop .5s}
+.done-card .medimg svg{width:100%}
+.done-card h2{font-family:var(--head);color:var(--med);font-size:1.8rem;margin:.2em 0}
+@keyframes pop{0%{transform:scale(0) rotate(-40deg)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+/* journal */
+.journal .jgrid{display:flex;flex-direction:column;gap:14px;margin:6px 0 18px}
+.jcard{display:flex;gap:16px;align-items:center;background:#fff;border:3px solid var(--sky);border-radius:22px;padding:16px;box-shadow:0 8px 20px rgba(40,120,181,.12)}
+.jcard.locked{opacity:.65;border-style:dashed}
+.jmed{flex:0 0 90px;width:90px}
+.jmed svg{width:100%}
+.jlock{font-size:3rem;text-align:center}
+.jbody{text-align:left}
+.jbody h3{font-family:var(--head);color:var(--med);margin:0 0 6px}
+.jbody ul{margin:0;padding-left:20px;line-height:1.5}
+.jhint{color:var(--ink2);font-style:italic}
+/* results */
+.results{text-align:center}
+.rankcard{background:linear-gradient(180deg,#fff,var(--cream));border:4px solid var(--rc);border-radius:28px;padding:22px;box-shadow:0 14px 36px rgba(40,120,181,.2);max-width:460px;margin:0 auto 18px}
+.rankemo{font-size:4rem;line-height:1}
+.ranklbl{font-family:var(--head);color:var(--ink2);margin:4px 0 0;letter-spacing:1px}
+.rankname{font-family:var(--head);font-size:2.2rem;color:var(--rc);margin:.1em 0}
+.bigscore{font-family:var(--head);font-size:2.6rem;color:var(--med)}
+.bigscore span{font-size:1rem;color:var(--ink2)}
+.rsec{font-family:var(--head);color:var(--med)}
+.rmedrow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:10px}
+.rmed{width:120px}
+.rmed .rmimg{width:84px;margin:0 auto}
+.rmed .rmimg svg{width:100%}
+.rmed span{display:block;font-size:.85rem;font-weight:700;margin-top:4px}
+.rmed.off{opacity:.5}
+.reflect{background:var(--cream);border-radius:20px;padding:18px;margin:14px 0;text-align:left}
+.reflect h3{font-family:var(--head);color:var(--med);margin:0 0 6px}
+.reflbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.reflb{font-family:var(--body);font-weight:700;background:#fff;border:2px solid var(--turq);border-radius:12px;padding:8px 12px;cursor:pointer}
+.reflb.sel{background:var(--turq);color:#fff}
+.reflmsg{margin-top:10px;min-height:20px}
+/* popup */
+.pop{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(40,120,181,.35);backdrop-filter:blur(3px);padding:20px}
+.pop.show{display:flex;animation:fade .3s}
+.pop .box{background:#fff;border:4px solid var(--gold);border-radius:28px;padding:26px;max-width:380px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.medpop .shine{width:150px;margin:0 auto;animation:pop .6s}
+.medpop .shine svg{width:100%}
+.manual{text-align:left}
+.manual .mantitle{font-family:var(--head);color:var(--coral);font-size:1.5rem;text-align:center;margin:.1em 0 .2em}
+.manual .mansub{text-align:center;color:#5a7184;margin:0 0 14px;font-size:.95rem}
+.manual .manbody{max-height:50vh;overflow-y:auto;padding-right:6px;margin-bottom:16px}
+.manrow{display:flex;gap:12px;align-items:flex-start;background:var(--cream);border:2px solid var(--sky);border-radius:16px;padding:12px 14px;margin-bottom:10px}
+.manrow .manico{font-size:1.5rem;line-height:1;flex:none}
+.manrow b{font-family:var(--head);color:var(--blue);display:block;margin-bottom:2px}
+.manrow p{margin:0;font-size:.92rem;color:#38506a;line-height:1.45}
+.manual>.btn{display:block;width:100%}
+.manual .manbtns{display:flex;gap:10px}
+.manual .manbtns .btn{flex:1}
+.medpop h3{font-family:var(--head);color:var(--coral);font-size:1.6rem;margin:.2em 0}
+.medpop .mname{font-family:var(--head);color:var(--med);font-size:1.3rem;margin:.1em 0}
+.medpop .msub{color:var(--ink2);line-height:1.45;margin:.4em 0 1em}
+/* toast + confetti */
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-family:var(--head);padding:12px 22px;border-radius:30px;z-index:60;opacity:0;transition:.3s;box-shadow:0 8px 20px rgba(0,0,0,.25);pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.confetti{position:fixed;inset:0;z-index:55;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-20px;width:12px;height:16px;border-radius:3px;animation:fall 2.4s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.9}}
+/* === end styles === */
+/* ===== FINAL MISSION CINEMATIC ===== */
+.finalscene{position:relative;height:420px;border-radius:24px;overflow:hidden;border:3px solid #fff;box-shadow:0 12px 34px rgba(40,120,181,.2);background:linear-gradient(180deg,#ffd9a0 0%,#ffc08a 32%,#ffe6c2 55%,#f3e0b0 100%)}
+.fsun{position:absolute;top:28px;left:50%;width:120px;height:120px;margin-left:-60px;border-radius:50%;background:radial-gradient(circle,#fff6d6 0%,#FFD166 55%,#ffb24d 100%);box-shadow:0 0 50px 18px rgba(255,209,102,.55);animation:fsun 4s ease-in-out infinite}
+@keyframes fsun{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.fsun::after{content:'';position:absolute;inset:-26px;border-radius:50%;border:4px dashed rgba(255,255,255,.4);animation:spin 26s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fhills{position:absolute;bottom:92px;left:0;right:0;height:120px;background:linear-gradient(180deg,#9BBF75,#7fa557);clip-path:polygon(0 100%,0 55%,18% 30%,36% 58%,54% 22%,72% 55%,90% 28%,100% 50%,100% 100%);opacity:.9}
+.fground{position:absolute;bottom:0;left:0;right:0;height:96px;background:linear-gradient(180deg,#cbab6e,#b1894f)}
+.fground::before{content:'';position:absolute;top:0;left:0;right:0;height:10px;background:#9BBF75;opacity:.6}
+.ftroops{position:absolute;bottom:58px;left:0;right:0;height:170px;display:flex;align-items:flex-end;gap:2px;padding-left:16px}
+.march{flex:0 0 auto;opacity:0;transform:translateX(-520px)}
+.march.go{animation:marchIn 1s ease-out forwards}
+.march svg{display:block;height:100%;width:auto}
+.march.m-alx{height:150px;z-index:5;filter:drop-shadow(0 6px 4px rgba(0,0,0,.18))}
+.march.soldier{height:118px;margin-left:-26px}
+.march.go .bobwrap,.march.go svg{animation:bob2 .6s ease-in-out infinite}
+@keyframes marchIn{0%{opacity:0;transform:translateX(-520px)}100%{opacity:1;transform:translateX(0)}}
+@keyframes bob2{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.fdust{position:absolute;bottom:56px;width:40px;height:16px;background:rgba(255,255,255,.55);border-radius:50%;opacity:0;animation:dust 1.4s ease-out infinite}
+@keyframes dust{0%{opacity:0;transform:translateX(0) scale(.6)}30%{opacity:.6}100%{opacity:0;transform:translateX(-60px) scale(1.4)}}
+.fbanner{position:absolute;top:120px;left:0;right:0;text-align:center;opacity:0;transform:scale(.6);z-index:6}
+.fbanner.go{animation:bannerIn .7s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes bannerIn{to{opacity:1;transform:scale(1)}}
+.fbanner h2{font-family:var(--head);font-size:2.4rem;color:#fff;margin:0;text-shadow:3px 3px 0 var(--coral),-1px -1px 0 var(--med)}
+.fbanner p{font-family:var(--head);color:#fff;margin:6px 0 0;font-size:1.1rem;text-shadow:2px 2px 0 rgba(40,120,181,.6)}
+.fspark{position:absolute;color:#fff;font-size:1.4rem;opacity:0;animation:spark 1.6s ease-in-out infinite}
+@keyframes spark{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:1;transform:scale(1.2)}}
+.finalcta{text-align:center;margin-top:16px;opacity:0;animation:fade .5s ease .2s forwards}
+.skipf{position:absolute;top:10px;right:12px;z-index:8;background:rgba(255,255,255,.85);border:none;border-radius:12px;padding:6px 12px;font-family:var(--head);color:var(--med);cursor:pointer}
+/* ===== MISSION CARDS (map start buttons) ===== */
+.pinlabel rect{fill:#fff;stroke:#2878B5;stroke-width:2}
+.pinlabel text{font-family:var(--head);font-size:15px;fill:var(--med);text-anchor:middle;font-weight:700}
+.pin.lock .pinlabel rect{stroke:#9fb0c2}
+.pin.lock .pinlabel text{fill:#8296ab}
+.pin.done .pinlabel rect{stroke:#5fb37a}
+.misscards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:18px}
+.misscard{display:flex;align-items:center;gap:14px;background:#fff;border:3px solid var(--sky);border-radius:20px;padding:14px;box-shadow:0 8px 20px rgba(40,120,181,.12);transition:.15s}
+.misscard.open{border-color:var(--med)}
+.misscard.open:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(40,120,181,.2)}
+.misscard.done{border-color:var(--ok);background:#f2fbf5}
+.misscard.lock{opacity:.72;border-style:dashed}
+.mcno{flex:0 0 52px;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:var(--head);font-size:1.6rem;color:#fff;background:var(--med)}
+.misscard.done .mcno{background:var(--ok)}
+.misscard.lock .mcno{background:#9fb0c2}
+.misscard.final .mcno{background:var(--gold);color:#7a5b12}
+.mcinfo{flex:1;text-align:left}
+.mcinfo h3{font-family:var(--head);color:var(--ink);margin:0;font-size:1.15rem}
+.mcinfo p{margin:2px 0 6px;color:var(--ink2);font-size:.9rem}
+.mcbadge{font-family:var(--head);font-size:.78rem;padding:3px 10px;border-radius:20px}
+.mcbadge.done{background:#d6f3e0;color:#2d7a4b}
+.mcbadge.open{background:#dcecfb;color:var(--med)}
+.mcbadge.lock{background:#e7edf3;color:#8296ab}
+.mcbtn{flex:0 0 auto;align-self:center;font-family:var(--head);font-size:1rem;background:var(--med);color:#fff;border:none;border-radius:14px;padding:11px 18px;cursor:pointer;box-shadow:0 4px 0 #1f5d90}
+.mcbtn:active{transform:translateY(2px);box-shadow:0 2px 0 #1f5d90}
+.mcbtn.ghost{background:var(--turq);box-shadow:0 4px 0 #2fa894}
+.mcbtn.final{background:var(--gold);color:#7a5b12;box-shadow:0 4px 0 #d1a53a}
+.mcbtn:disabled{background:#c3cedb;box-shadow:0 4px 0 #a6b4c4;cursor:not-allowed}
+/* ===== WAR COUNCIL (choices) ===== */
+.council{display:flex;flex-direction:column;gap:16px;margin:10px 0}
+.decision{background:var(--cream);border-radius:18px;padding:14px 16px;border:2px solid var(--sky)}
+.dechead{font-family:var(--head);font-size:1.15rem;color:var(--med);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.decicon{font-size:1.4rem}
+.decopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.decopt{text-align:left;background:#fff;border:3px solid var(--sky);border-radius:14px;padding:12px;cursor:pointer;font-family:var(--body);transition:.15s}
+.decopt b{display:block;font-family:var(--head);color:var(--ink);font-size:1rem;margin-bottom:4px}
+.decopt span{font-size:.85rem;color:var(--ink2);line-height:1.35;display:block}
+.decopt:hover{transform:translateY(-2px);border-color:var(--med)}
+.decopt.sel{background:#fff6d6;border-color:var(--gold);box-shadow:0 4px 0 #d1a53a}
+/* ===== BATTLE ANIMATION ===== */
+.battlescene{position:relative;height:430px;border-radius:24px;overflow:hidden;border:3px solid #fff;box-shadow:0 12px 34px rgba(40,120,181,.2);background:linear-gradient(180deg,#aee0ff 0%,#d6f0ff 45%,#f0e4bd 100%)}
+.army{position:absolute;bottom:72px;display:flex;align-items:flex-end;gap:1px;transition:transform 1.1s cubic-bezier(.3,.7,.4,1),opacity .9s ease;z-index:4}
+.army.ally{left:5%}
+.army.foe{right:5%}
+.army.foe .unit{transform:scaleX(-1)}
+.unit{width:66px;height:96px;flex:0 0 auto}
+.unit svg{width:100%;height:100%;display:block;animation:bob2 .6s ease-in-out infinite;animation-delay:var(--d)}
+.unit.cmd{width:92px;height:128px;margin-right:-6px;filter:drop-shadow(0 6px 4px rgba(0,0,0,.18))}
+.battlescene.approach .ally{transform:translateX(120px)}
+.battlescene.approach .foe{transform:translateX(-120px)}
+.battlescene.clash{animation:shakeScene .16s linear 5}
+@keyframes shakeScene{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.battlescene.win .ally{transform:translateX(240px)}
+.battlescene.win .foe{transform:translateX(520px);opacity:0}
+.battlescene.lose .ally{transform:translateX(-280px);opacity:.1}
+.battlescene.lose .foe{transform:translateX(-210px)}
+.clashfx{position:absolute;top:150px;left:50%;font-size:3.4rem;opacity:0;transform:translate(-50%,-50%) scale(0);z-index:7;filter:drop-shadow(0 2px 2px rgba(0,0,0,.2))}
+.battlescene.clash .clashfx{animation:clashpop .7s ease}
+@keyframes clashpop{0%{opacity:0;transform:translate(-50%,-50%) scale(0) rotate(-40deg)}40%{opacity:1;transform:translate(-50%,-50%) scale(1.5) rotate(12deg)}100%{opacity:0;transform:translate(-50%,-50%) scale(1) rotate(0)}}
+.battlebanner{position:absolute;top:34px;left:0;right:0;text-align:center;opacity:0;transform:scale(.5);z-index:8}
+.battlebanner.go{animation:bannerIn .6s cubic-bezier(.2,1.4,.4,1) forwards}
+.bwin{font-family:var(--head);font-size:clamp(2rem,6vw,2.8rem);color:#fff;text-shadow:3px 3px 0 var(--ok),-1px -1px 0 var(--med)}
+.blose{font-family:var(--head);font-size:clamp(1.6rem,5vw,2.2rem);color:#fff;text-shadow:3px 3px 0 var(--coral),-1px -1px 0 var(--med)}
+.battlestatus{text-align:center;font-family:var(--head);color:var(--ink2);margin-top:14px;font-size:1.05rem}
+/* ===== OUTCOME PANEL ===== */
+.outcome{text-align:center}
+.outcome .medimg{width:130px;margin:0 auto 6px;animation:pop .5s}
+.outcome .medimg svg{width:100%}
+.outcome h2{font-family:var(--head);margin:.2em 0;font-size:1.7rem}
+.outcome.win h2{color:#2d7a4b}
+.outcome.lose h2{color:var(--coral)}
+.tips{background:var(--cream);border-radius:16px;padding:14px 18px;text-align:left;margin:14px 0}
+.tipshd{font-family:var(--head);color:var(--med);margin:0 0 6px}
+.tips ul{margin:0;padding-left:20px;line-height:1.55}
+.tips li{margin-bottom:6px}
+.tips b{color:var(--med)}
+.ekit{display:inline-block;font-family:var(--head);font-size:.95rem;letter-spacing:1px;text-transform:uppercase;color:var(--med);background:#fff;border:2px solid var(--gold);border-radius:999px;padding:5px 16px;margin-bottom:8px;box-shadow:0 3px 0 #d1a53a}
+</style>
+</head>
+<body>
+<div class="clouds"><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div></div>
+<div class="greekbg" aria-hidden="true">
+  <div class="gsun"></div>
+  <div class="g-col l"><svg viewBox="0 0 84 600" preserveAspectRatio="none"><rect x="4" y="24" width="76" height="16" rx="2" fill="#8a5a2b"/><rect x="10" y="40" width="64" height="16" rx="2" fill="#8a5a2b"/><rect x="14" y="56" width="56" height="512" fill="#8a5a2b"/><g stroke="#5c3c1d" stroke-width="3"><line x1="24" y1="56" x2="24" y2="568"/><line x1="34" y1="56" x2="34" y2="568"/><line x1="44" y1="56" x2="44" y2="568"/><line x1="54" y1="56" x2="54" y2="568"/><line x1="64" y1="56" x2="64" y2="568"/></g><rect x="8" y="568" width="68" height="18" rx="2" fill="#8a5a2b"/><rect x="2" y="586" width="80" height="14" rx="2" fill="#8a5a2b"/></svg></div>
+  <div class="g-col r"><svg viewBox="0 0 84 600" preserveAspectRatio="none"><rect x="4" y="24" width="76" height="16" rx="2" fill="#8a5a2b"/><rect x="10" y="40" width="64" height="16" rx="2" fill="#8a5a2b"/><rect x="14" y="56" width="56" height="512" fill="#8a5a2b"/><g stroke="#5c3c1d" stroke-width="3"><line x1="24" y1="56" x2="24" y2="568"/><line x1="34" y1="56" x2="34" y2="568"/><line x1="44" y1="56" x2="44" y2="568"/><line x1="54" y1="56" x2="54" y2="568"/><line x1="64" y1="56" x2="64" y2="568"/></g><rect x="8" y="568" width="68" height="18" rx="2" fill="#8a5a2b"/><rect x="2" y="586" width="80" height="14" rx="2" fill="#8a5a2b"/></svg></div>
+  <div class="g-temple"><svg viewBox="0 0 400 190"><polygon points="200,6 392,66 8,66" fill="#C96E4A"/><rect x="14" y="66" width="372" height="18" fill="#C96E4A"/><g fill="#C96E4A"><rect x="24" y="84" width="26" height="92"/><rect x="90" y="84" width="26" height="92"/><rect x="156" y="84" width="26" height="92"/><rect x="222" y="84" width="26" height="92"/><rect x="288" y="84" width="26" height="92"/><rect x="354" y="84" width="22" height="92"/></g><rect x="6" y="176" width="388" height="14" fill="#C96E4A"/></svg></div>
+  <div class="g-urn u1"><svg viewBox="0 0 60 100"><path d="M20 8 Q10 10 14 20 Q4 28 10 52 Q14 84 30 92 Q46 84 50 52 Q56 28 46 20 Q50 10 40 8 Z" fill="#7d2b3e"/><ellipse cx="30" cy="10" rx="12" ry="4" fill="#5c1f2d"/></svg></div>
+  <div class="g-urn u2"><svg viewBox="0 0 60 100"><path d="M20 8 Q10 10 14 20 Q4 28 10 52 Q14 84 30 92 Q46 84 50 52 Q56 28 46 20 Q50 10 40 8 Z" fill="#7d2b3e"/><ellipse cx="30" cy="10" rx="12" ry="4" fill="#5c1f2d"/></svg></div>
+  <div class="meander meander-top"></div>
+  <div class="meander meander-bottom"></div>
+</div>
+<div id="app"></div>
+<div class="pop" id="pop"><div class="box"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+'use strict';
+const $=(s,r=document)=>r.querySelector(s);
+const app=$('#app');
+
+/* ====================== SVG ART ====================== */
+const A={};
+/* Alexios — friendly cartoon commander */
+A.alexios=`<svg viewBox="0 0 130 190" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="65" cy="182" rx="40" ry="7" fill="#2878B5" opacity=".18"/>
+<!-- legs -->
+<rect x="50" y="138" width="13" height="34" rx="6" fill="#e7c38a"/><rect x="68" y="138" width="13" height="34" rx="6" fill="#e7c38a"/>
+<rect x="47" y="166" width="19" height="10" rx="4" fill="#8a5a2b"/><rect x="65" y="166" width="19" height="10" rx="4" fill="#8a5a2b"/>
+<!-- tunic -->
+<path d="M38 92 Q65 82 92 92 L96 146 Q65 154 34 146 Z" fill="#2878B5"/>
+<path d="M38 120 Q65 128 92 120 L94 134 Q65 142 36 134Z" fill="#FFD166"/>
+<rect x="46" y="92" width="38" height="8" fill="#FFD166"/>
+<!-- arms -->
+<rect x="30" y="96" width="12" height="40" rx="6" fill="#e7c38a"/>
+<rect x="88" y="96" width="12" height="40" rx="6" fill="#e7c38a"/>
+<!-- shield (left) -->
+<circle cx="28" cy="124" r="22" fill="#FF956B" stroke="#d96a44" stroke-width="3"/><circle cx="28" cy="124" r="13" fill="none" stroke="#ffd9c6" stroke-width="3"/><circle cx="28" cy="124" r="4" fill="#fff"/>
+<!-- head -->
+<circle cx="65" cy="66" r="26" fill="#f3d2a0"/>
+<circle cx="56" cy="66" r="3" fill="#355070"/><circle cx="74" cy="66" r="3" fill="#355070"/>
+<circle cx="52" cy="72" r="4" fill="#ff9e8f" opacity=".6"/><circle cx="78" cy="72" r="4" fill="#ff9e8f" opacity=".6"/>
+<path d="M57 76 Q65 82 73 76" fill="none" stroke="#9a6a3a" stroke-width="3" stroke-linecap="round"/>
+<!-- helmet -->
+<path d="M39 60 Q39 34 65 32 Q91 34 91 60 L84 60 Q84 44 65 42 Q46 44 46 60Z" fill="#d9a441" stroke="#b9832f" stroke-width="2"/>
+<path d="M46 60 Q46 52 65 50 Q84 52 84 60 L84 66 L46 66Z" fill="#e9b957"/>
+<rect x="62" y="54" width="6" height="18" rx="2" fill="#e9b957"/>
+<!-- crest -->
+<path d="M60 32 Q65 10 70 32 Q80 14 78 30 Z" fill="#FF956B"/><path d="M58 30 Q65 16 72 30Z" fill="#e06a4b"/>
+</svg>`;
+/* a floating head-only Alexios for small feedback avatars */
+A.alexHead=`<svg viewBox="0 0 90 90"><circle cx="45" cy="50" r="24" fill="#f3d2a0"/><circle cx="37" cy="50" r="3" fill="#355070"/><circle cx="53" cy="50" r="3" fill="#355070"/><circle cx="33" cy="56" r="4" fill="#ff9e8f" opacity=".6"/><circle cx="57" cy="56" r="4" fill="#ff9e8f" opacity=".6"/><path d="M38 60 Q45 65 52 60" fill="none" stroke="#9a6a3a" stroke-width="3" stroke-linecap="round"/><path d="M20 46 Q20 22 45 20 Q70 22 70 46 L63 46 Q63 30 45 28 Q27 30 27 46Z" fill="#d9a441" stroke="#b9832f" stroke-width="2"/><path d="M40 20 Q45 2 50 20 Q60 6 58 20Z" fill="#FF956B"/></svg>`;
+/* cartoon Greek ship */
+A.ship=`<svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg">
+<path d="M30 108 Q120 150 210 108 L196 90 L44 90Z" fill="#8a5a2b"/>
+<path d="M30 108 Q120 150 210 108 L205 100 Q120 138 35 100Z" fill="#6b4420"/>
+<rect x="40" y="80" width="160" height="14" rx="4" fill="#b5793c"/>
+<path d="M30 108 l-16 -6 l16 -8Z" fill="#6b4420"/>
+<circle cx="22" cy="98" r="10" fill="#FFD166" stroke="#d1a53a" stroke-width="2"/>
+<rect x="116" y="18" width="7" height="64" rx="3" fill="#6b4420"/>
+<path d="M123 26 Q180 40 180 70 L123 74Z" fill="#FFF9EC" stroke="#48C9B0" stroke-width="3"/>
+<path d="M140 40 h26 M136 54 h34" stroke="#48C9B0" stroke-width="4" stroke-linecap="round"/>
+<circle cx="120" cy="16" r="6" fill="#FF956B"/>
+<g stroke="#6b4420" stroke-width="3" stroke-linecap="round"><line x1="60" y1="104" x2="52" y2="124"/><line x1="90" y1="110" x2="84" y2="130"/><line x1="150" y1="110" x2="156" y2="130"/><line x1="180" y1="104" x2="188" y2="124"/></g>
+</svg>`;
+/* small top-down-ish ship marker for map */
+A.shipMini=`<g><path d="M-30 8 Q0 26 30 8 L24 -2 L-24 -2Z" fill="#8a5a2b" stroke="#6b4420" stroke-width="2"/><rect x="-22" y="-6" width="44" height="6" rx="2" fill="#b5793c"/><line x1="0" y1="-6" x2="0" y2="-34" stroke="#6b4420" stroke-width="3"/><path d="M2 -32 Q24 -22 24 -8 L2 -6Z" fill="#FFF9EC" stroke="#48C9B0" stroke-width="2"/><path d="M-30 8 l-10 -5 l10 -3Z" fill="#6b4420"/></g>`;
+
+/* medallion (gold with star) */
+A.medal=(col='#FFD166')=>`<svg viewBox="0 0 120 120"><defs><radialGradient id="mg" cx=".4" cy=".35"><stop offset="0" stop-color="#fff3c6"/><stop offset=".55" stop-color="${col}"/><stop offset="1" stop-color="#d1a53a"/></radialGradient></defs><circle cx="60" cy="60" r="46" fill="url(#mg)" stroke="#d1a53a" stroke-width="5"/><circle cx="60" cy="60" r="34" fill="none" stroke="#fff" stroke-width="3" opacity=".7"/><path d="M60 34 l7 16 l18 2 l-13 12 l4 18 l-16 -9 l-16 9 l4 -18 l-13 -12 l18 -2Z" fill="#fff" opacity=".95"/></svg>`;
+
+/* troops */
+A.hoplite=`<svg viewBox="0 0 60 90"><ellipse cx="30" cy="85" rx="16" ry="4" fill="#2878B5" opacity=".15"/><rect x="24" y="58" width="6" height="24" rx="3" fill="#e7c38a"/><rect x="32" y="58" width="6" height="24" rx="3" fill="#e7c38a"/><path d="M18 40 Q30 34 42 40 L44 62 Q30 68 16 62Z" fill="#2878B5"/><circle cx="18" cy="52" r="14" fill="#FF956B" stroke="#d96a44" stroke-width="2"/><circle cx="18" cy="52" r="4" fill="#fff"/><line x1="46" y1="18" x2="46" y2="78" stroke="#8a5a2b" stroke-width="3"/><path d="M46 16 l4 8 l-8 0Z" fill="#cfcfcf"/><circle cx="30" cy="26" r="12" fill="#f3d2a0"/><path d="M18 24 Q18 10 30 9 Q42 10 42 24 L37 24 Q37 15 30 14 Q23 15 23 24Z" fill="#d9a441"/><path d="M26 9 Q30 -2 34 9Z" fill="#FF956B"/><circle cx="27" cy="26" r="2" fill="#355070"/><circle cx="33" cy="26" r="2" fill="#355070"/></svg>`;
+/* enemy soldier (friendly cartoon, maroon tunic + purple shield) */
+A.enemy=`<svg viewBox="0 0 60 90"><ellipse cx="30" cy="85" rx="16" ry="4" fill="#7a3b50" opacity=".15"/><rect x="24" y="58" width="6" height="24" rx="3" fill="#e7c38a"/><rect x="32" y="58" width="6" height="24" rx="3" fill="#e7c38a"/><path d="M18 40 Q30 34 42 40 L44 62 Q30 68 16 62Z" fill="#9c4a5e"/><circle cx="18" cy="52" r="14" fill="#7a5fa0" stroke="#5c4680" stroke-width="2"/><path d="M18 42 v20 M8 52 h20" stroke="#d7c9ee" stroke-width="2"/><line x1="46" y1="18" x2="46" y2="78" stroke="#8a5a2b" stroke-width="3"/><path d="M46 16 l4 8 l-8 0Z" fill="#cfcfcf"/><circle cx="30" cy="26" r="12" fill="#f3d2a0"/><path d="M18 24 Q18 10 30 9 Q42 10 42 24 L37 24 Q37 15 30 14 Q23 15 23 24Z" fill="#aab0b5"/><path d="M26 9 Q30 -2 34 9Z" fill="#b5495e"/><circle cx="27" cy="26" r="2" fill="#355070"/><circle cx="33" cy="26" r="2" fill="#355070"/></svg>`;
+/* equipment */
+A.hoplon=`<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="#FF956B" stroke="#d96a44" stroke-width="6"/><circle cx="60" cy="60" r="34" fill="none" stroke="#ffd9c6" stroke-width="5"/><circle cx="60" cy="60" r="20" fill="none" stroke="#ffd9c6" stroke-width="4"/><circle cx="60" cy="60" r="8" fill="#fff"/></svg>`;
+A.dory=`<svg viewBox="0 0 120 120"><line x1="24" y1="96" x2="96" y2="24" stroke="#8a5a2b" stroke-width="7" stroke-linecap="round"/><path d="M96 24 l10 -4 l-4 12 l-10 4Z" fill="#cfd4d8" stroke="#9aa0a6" stroke-width="2"/><path d="M24 96 l-8 4 l4 -12Z" fill="#cfd4d8"/></svg>`;
+A.xiphos=`<svg viewBox="0 0 120 120"><path d="M78 20 L86 28 L48 78 L40 70Z" fill="#cfd4d8" stroke="#9aa0a6" stroke-width="2"/><rect x="34" y="72" width="22" height="8" rx="3" transform="rotate(45 45 76)" fill="#FFD166"/><rect x="30" y="82" width="10" height="18" rx="4" transform="rotate(45 35 91)" fill="#8a5a2b"/></svg>`;
+A.trireme=`<svg viewBox="0 0 160 120"><path d="M18 76 Q80 108 142 76 L132 62 L28 62Z" fill="#8a5a2b" stroke="#6b4420" stroke-width="2"/><rect x="26" y="54" width="108" height="10" rx="3" fill="#b5793c"/><circle cx="14" cy="68" r="7" fill="#FFD166"/><line x1="80" y1="18" x2="80" y2="56" stroke="#6b4420" stroke-width="4"/><path d="M84 22 Q122 32 122 50 L84 52Z" fill="#FFF9EC" stroke="#48C9B0" stroke-width="3"/><g stroke="#6b4420" stroke-width="2"><line x1="40" y1="74" x2="34" y2="88"/><line x1="60" y1="78" x2="56" y2="92"/><line x1="100" y1="78" x2="104" y2="92"/><line x1="120" y1="74" x2="126" y2="88"/></g></svg>`;
+A.helmet=`<svg viewBox="0 0 120 120"><path d="M28 78 Q28 26 60 22 Q92 26 92 78 L80 78 Q80 40 60 38 Q40 40 40 78Z" fill="#d9a441" stroke="#b9832f" stroke-width="3"/><path d="M40 78 Q40 60 60 56 Q80 60 80 78 L80 90 L40 90Z" fill="#e9b957"/><rect x="55" y="64" width="10" height="26" rx="3" fill="#d9a441"/><path d="M52 22 Q60 -4 68 22 Q84 2 80 20Z" fill="#FF956B"/></svg>`;
+
+/* big bright adventure map with sea route + 5 checkpoints */
+A.mapBg=`<defs><linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fe0d6"/><stop offset="1" stop-color="#48C9B0"/></linearGradient><linearGradient id="land" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe8a3"/><stop offset="1" stop-color="#9BBF75"/></linearGradient></defs>`;
+/* ====================== STATE ====================== */
+const MEDALS={
+  defence:{name:'Pingat Pertahanan',col:'#48C9B0'},
+  army:{name:'Pingat Tentera',col:'#2878B5'},
+  strategy:{name:'Pingat Strategi',col:'#FF956B'},
+  equip:{name:'Pingat Kelengkapan',col:'#9BBF75'},
+  grand:{name:'Pingat Panglima Agung',col:'#FFD166'}
+};
+const DEF_STATE={score:0,done:{m1:false,m2:false,m3:false,m4:false},medals:{},journal:[]};
+let S=load();
+function load(){try{const r=sessionStorage.getItem('gwlm');if(r)return JSON.parse(r);}catch(e){}return JSON.parse(JSON.stringify(DEF_STATE));}
+function save(){try{sessionStorage.setItem('gwlm',JSON.stringify(S));}catch(e){}}
+function addScore(n){S.score+=n;save();updTop();}
+function award(key){if(S.medals[key])return false;S.medals[key]=true;save();updTop();medalPopup(key);return true;}
+function updTop(){const t=$('#topbar');if(!t)return;$('#scoreVal').textContent=S.score;const mw=$('#medWrap');mw.innerHTML='';Object.keys(MEDALS).forEach(k=>{const got=S.medals[k];mw.insertAdjacentHTML('beforeend',`<span class="medchip ${got?'on':''}" title="${MEDALS[k].name}">${got?'\u2b50':'\u25cb'}</span>`);});}
+
+/* ====================== HELPERS ====================== */
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1800);}
+function confetti(){const c=document.createElement('div');c.className='confetti';for(let i=0;i<40;i++){const p=document.createElement('i');p.style.left=Math.random()*100+'%';p.style.background=['#FFD166','#48C9B0','#FF956B','#2878B5','#9BBF75'][i%5];p.style.animationDelay=(Math.random()*.6)+'s';p.style.transform='rotate('+(Math.random()*360)+'deg)';c.appendChild(p);}document.body.appendChild(c);setTimeout(()=>c.remove(),2600);}
+function medalPopup(key){const m=MEDALS[key];const pop=$('#pop');pop.querySelector('.box').innerHTML=`<div class="medpop"><div class="shine">${A.medal(m.col)}</div><h3>Pingat Diperoleh!</h3><p class="mname">${m.name}</p><p class="msub">Syabas, wira muda! Kamu berjaya menyelesaikan cabaran ini.</p><button class="btn" id="popOk">Teruskan \u2192</button></div>`;pop.classList.add('show');confetti();SND.ding();$('#popOk').onclick=()=>pop.classList.remove('show');}
+function showManual(){
+  const pop=$('#pop');
+  pop.querySelector('.box').innerHTML=`<div class="manual">
+    <h3 class="mantitle">\ud83d\udcd8 Manual Pengguna</h3>
+    <p class="mansub">Selamat datang, wira muda! Baca panduan ringkas ini sebelum bermula.</p>
+    <div class="manbody">
+      <div class="manrow"><span class="manico">\ud83c\udfaf</span><div><b>Matlamat Permainan</b><p>Bantu panglima <b>Alexios</b> mencari <b>5 Pingat Ajaib</b> yang hilang sambil belajar tentang tentera Yunani purba.</p></div></div>
+      <div class="manrow"><span class="manico">\ud83d\uddfa\ufe0f</span><div><b>Peta Pengembaraan</b><p>Di peta, klik setiap misi mengikut giliran. Misi akan terbuka satu demi satu selepas yang sebelumnya selesai.</p></div></div>
+      <div class="manrow"><span class="manico">\ud83e\udde9</span><div><b>Jenis Aktiviti</b><p>Kamu akan main <b>kuiz</b>, <b>padankan perkataan</b>, <b>susun kelengkapan</b>, pilih <b>tempat pertahanan</b>, dan bina dinding <b>phalanx</b>. Ikut arahan di setiap skrin.</p></div></div>
+      <div class="manrow"><span class="manico">\u2b50</span><div><b>Mata &amp; Pingat</b><p>Jawapan betul memberi <b>mata</b>. Setiap misi yang tamat memberi satu <b>pingat</b>. Lihat jumlah mata dan pingat di bar atas.</p></div></div>
+      <div class="manrow"><span class="manico">\ud83c\udfc6</span><div><b>Cabaran Akhir</b><p>Selepas 4 misi selesai, hadapi <b>pertempuran besar</b>! Pilih tempat, formasi, senjata dan taktik yang betul untuk menang.</p></div></div>
+      <div class="manrow"><span class="manico">\ud83d\udd0a</span><div><b>Bunyi &amp; Muzik</b><p>Ada muzik latar, bunyi klik, dan bunyi betul/salah. Tekan butang <b>\ud83d\udd0a / \ud83d\udd07</b> di bar atas untuk hidup/senyapkan bunyi.</p></div></div>
+      <div class="manrow"><span class="manico">\ud83d\udca1</span><div><b>Petua</b><p>Jangan risau jika tersilap \u2014 cuba lagi sehingga betul. Baca kotak <b>\u201cTahukah Kamu?\u201d</b> untuk belajar fakta menarik!</p></div></div>
+    </div>
+    <div class="manbtns"><button class="btn ghost" id="manBack">\u2190 Kembali Semula</button><button class="btn" id="manClose">Faham, Mula Bermain \ud83d\udea2</button></div>
+  </div>`;
+  pop.classList.add('show');
+  $('#manClose').onclick=()=>{pop.classList.remove('show');SND.ensure();SND.resume();SND.startMusic();route('map');};
+  $('#manBack').onclick=()=>{pop.classList.remove('show');route('opening');};
+}
+function showObjektif(){
+  const pop=$('#pop');
+  pop.querySelector('.box').innerHTML=`<div class="manual">
+    <h3 class="mantitle">\ud83c\udfaf Objektif Permainan</h3>
+    <p class="mansub">Selepas bermain, murid akan dapat:</p>
+    <div class="manbody">
+      <div class="manrow"><span class="manico">1\ufe0f\u20e3</span><div><b>Mengenali tentera Yunani purba</b><p>Murid dapat mengenal pasti askar <b>hoplite</b>, kelengkapan mereka seperti perisai <b>hoplon</b>, lembing <b>dory</b> dan topi keledar, serta memahami peranan setiap satu.</p></div></div>
+      <div class="manrow"><span class="manico">2\ufe0f\u20e3</span><div><b>Memahami formasi phalanx</b><p>Murid dapat menerangkan bagaimana formasi <b>phalanx</b> berfungsi dan mengapa kerjasama serta perisai bertindih menjadikan tentera lebih kuat.</p></div></div>
+      <div class="manrow"><span class="manico">3\ufe0f\u20e3</span><div><b>Membuat keputusan strategik</b><p>Murid dapat berfikir seperti panglima \u2014 memilih tempat, formasi, senjata dan taktik yang betul untuk menang walaupun tentera lebih kecil.</p></div></div>
+    </div>
+    <div class="manbtns"><button class="btn ghost" id="objBack">\u2190 Kembali Semula</button><button class="btn" id="objClose">Faham, Mula Bermain \ud83d\udea2</button></div>
+  </div>`;
+  pop.classList.add('show');
+  $('#objClose').onclick=()=>{pop.classList.remove('show');SND.ensure();SND.resume();SND.startMusic();route('map');};
+  $('#objBack').onclick=()=>{pop.classList.remove('show');route('opening');};
+}
+function speech(txt,small){return `<div class="guide ${small?'sm':''}"><div class="gav">${small?A.alexHead:A.alexios}</div><div class="bubble">${txt}</div></div>`;}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+/* ====================== SOUND & MUSIC (Web Audio, offline) ====================== */
+const SND={
+  ctx:null,on:true,master:null,musicGain:null,seqTimer:null,step:0,playing:false,mode:'normal',
+  ensure(){
+    if(this.ctx)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+    this.ctx=new AC();
+    this.master=this.ctx.createGain();this.master.gain.value=0.9;this.master.connect(this.ctx.destination);
+    this.musicGain=this.ctx.createGain();this.musicGain.gain.value=0.26;this.musicGain.connect(this.master);
+  },
+  resume(){this.ensure();if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume();},
+  blip(freq,t0,dur,type,vol,dest){
+    if(!this.ctx)return;const o=this.ctx.createOscillator(),g=this.ctx.createGain();
+    o.type=type||'sine';o.frequency.setValueAtTime(freq,t0);
+    g.gain.setValueAtTime(0.0001,t0);g.gain.linearRampToValueAtTime(vol||0.3,t0+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    o.connect(g);g.connect(dest||this.master);o.start(t0);o.stop(t0+dur+0.03);
+  },
+  hat(t0,vol){
+    if(!this.ctx)return;const len=Math.floor(this.ctx.sampleRate*0.05);
+    const b=this.ctx.createBuffer(1,len,this.ctx.sampleRate),d=b.getChannelData(0);
+    for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);
+    const s=this.ctx.createBufferSource();s.buffer=b;const g=this.ctx.createGain();g.gain.value=vol||0.08;
+    s.connect(g);g.connect(this.musicGain);s.start(t0);
+  },
+  correct(){if(!this.on)return;this.resume();if(!this.ctx)return;const t=this.ctx.currentTime;[523.25,659.25,783.99,1046.5].forEach((f,i)=>this.blip(f,t+i*0.085,0.2,'triangle',0.32));},
+  wrong(){if(!this.on)return;this.resume();if(!this.ctx)return;const t=this.ctx.currentTime;this.blip(311.13,t,0.18,'sawtooth',0.2);this.blip(233.08,t+0.12,0.28,'sawtooth',0.2);},
+  ding(){if(!this.on)return;this.resume();if(!this.ctx)return;const t=this.ctx.currentTime;this.blip(880,t,0.14,'triangle',0.28);this.blip(1318.5,t+0.07,0.16,'triangle',0.24);},
+  click(){if(!this.on)return;this.resume();if(!this.ctx)return;const t=this.ctx.currentTime;this.blip(1200,t,0.045,'square',0.12);},
+  startMusic(mode){
+    this.resume();if(mode)this.mode=mode;if(!this.ctx||this.playing||!this.on)return;this.playing=true;this.step=0;
+    const SONGS={
+      normal:{bpm:126,melVol:0.15,bassVol:0.22,melType:'triangle',
+        mel:[659.25,0,659.25,783.99,880,0,783.99,659.25,587.33,0,659.25,0,880,987.77,1046.5,0],
+        bass:[130.81,0,196,0,164.81,0,196,0,146.83,0,220,0,130.81,0,196,0]},
+      epic:{bpm:132,melVol:0.2,bassVol:0.32,melType:'sawtooth',
+        mel:[587.33,0,698.46,0,880,0,783.99,698.46,587.33,0,698.46,587.33,523.25,0,587.33,0],
+        bass:[146.83,146.83,146.83,146.83,174.61,174.61,174.61,174.61,196,196,196,196,130.81,130.81,146.83,146.83]}
+    };
+    const cfg=SONGS[this.mode]||SONGS.normal;
+    const bpm=cfg.bpm,stepDur=60/bpm/2;
+    const mel=cfg.mel,bass=cfg.bass,epic=this.mode==='epic';
+    const tick=()=>{
+      if(!this.playing){return;}
+      const t=this.ctx.currentTime+0.03,s=this.step%16;
+      if(mel[s])this.blip(mel[s],t,stepDur*0.9,cfg.melType,cfg.melVol,this.musicGain);
+      if(bass[s])this.blip(bass[s],t,stepDur*(epic?1.0:1.6),'sine',cfg.bassVol,this.musicGain);
+      if(epic){
+        this.hat(t,s%2===0?0.12:0.07);
+        if(s%4===0)this.blip(65.41,t,0.18,'sine',0.4,this.musicGain);
+      }else{
+        if(s%2===0)this.hat(t,0.05);
+        if(s%4===0)this.hat(t,0.1);
+      }
+      this.step++;this.seqTimer=setTimeout(tick,stepDur*1000);
+    };tick();
+  },
+  setMode(mode){
+    if(mode===this.mode)return;this.mode=mode;
+    if(this.playing&&this.on){this.stopMusic();this.startMusic(mode);}
+  },
+  stopMusic(){this.playing=false;if(this.seqTimer){clearTimeout(this.seqTimer);this.seqTimer=null;}},
+  toggle(){this.on=!this.on;if(this.on){this.ensure();this.resume();this.startMusic();}else{this.stopMusic();}return this.on;}
+};
+/* ====================== QUIZ ENGINE ====================== */
+/* questions:[{q,img,opts:[],ans:idx,fb}]  onDone(correctFirstCount,total) */
+function QuizEngine(mount,questions,opts){
+  opts=opts||{};const pts=opts.pts||10;
+  let i=0,firstCount=0,answeredFirst=false,finished=0;
+  function render(){
+    const Q=questions[i];answeredFirst=false;
+    mount.innerHTML=`<div class="qcard">
+      <div class="qprog">Soalan ${i+1} / ${questions.length}</div>
+      ${Q.img?`<div class="qimg">${Q.img}</div>`:''}
+      <h3 class="qtext">${Q.q}</h3>
+      <div class="opts">${Q.opts.map((o,k)=>`<button class="opt" data-k="${k}">${o}</button>`).join('')}</div>
+      <div class="qfb" id="qfb"></div>
+      <div class="qnav"><button class="btn ghost" id="qnext" disabled>Seterusnya \u2192</button></div>
+    </div>`;
+    mount.querySelectorAll('.opt').forEach(b=>b.onclick=()=>pick(b,Q));
+    $('#qnext',mount).onclick=next;
+  }
+  function pick(btn,Q){
+    const k=+btn.dataset.k;if(btn.classList.contains('locked'))return;
+    const correct=k===Q.ans;const fb=$('#qfb',mount);
+    if(correct){
+      SND.correct();
+      mount.querySelectorAll('.opt').forEach(b=>{b.classList.add('locked');if(+b.dataset.k===Q.ans)b.classList.add('right');});
+      if(!answeredFirst){firstCount++;addScore(pts);toast('+'+pts+' mata');}
+      fb.innerHTML=`<div class="fb good">${A.alexHead}<div><b>Betul! \u2b50</b><br>${Q.fb}</div></div>`;
+      $('#qnext',mount).disabled=false;$('#qnext',mount).classList.remove('ghost');
+    }else{
+      SND.wrong();
+      answeredFirst=true;
+      btn.classList.add('wrong','locked');
+      fb.innerHTML=`<div class="fb bad">${A.alexHead}<div><b>Cuba lagi!</b><br>Jawapan itu belum tepat. Fikir sekali lagi, kamu boleh!</div></div>`;
+    }
+  }
+  function next(){i++;if(i>=questions.length){opts.onDone&&opts.onDone(firstCount,questions.length);}else render();}
+  render();
+}
+/* ====================== ROUTER ====================== */
+const routes={};
+function route(name){location.hash='#'+name;}
+function topbar(show){
+  return show?`<div id="topbar" class="topbar"><button class="tbtn" id="tHome">\ud83c\udfe0 Peta</button><button class="tbtn" id="tSound">\ud83d\udd0a</button><div class="sc"><span class="sclbl">Mata</span> <b id="scoreVal">${S.score}</b></div><div class="med"><span class="sclbl">Pingat</span><span id="medWrap"></span></div></div>`:'';}
+function mount(html,withTop){
+  app.innerHTML=(withTop?topbar(true):'')+`<div class="screen">${html}</div>`;
+  if(withTop){updTop();const h=$('#tHome');if(h)h.onclick=()=>route('map');const sb=$('#tSound');if(sb){sb.textContent=SND.on?'🔊':'🔇';sb.onclick=()=>{const on=SND.toggle();sb.textContent=on?'🔊':'🔇';};}}
+  window.scrollTo(0,0);
+}
+function render(){
+  const name=(location.hash||'#opening').slice(1).split('?')[0];
+  if(SND&&SND.setMode)SND.setMode(name==='final'?'epic':'normal');
+  (routes[name]||routes.opening)();
+}
+window.addEventListener('hashchange',render);
+
+/* ====================== OPENING ====================== */
+routes.opening=function(){
+  app.innerHTML=`<div class="screen opening">
+    <div class="open-hero">
+      <p class="ekit">e-Kit Pembelajaran</p>
+      <div class="open-ship">${A.ship}</div>
+      <h1 class="title">WIRA YUNANI</h1>
+      <h2 class="subt">Pingat Yang Hilang</h2>
+      <p class="era">\u23f3 Yunani Purba \u2022 lebih 2,400 tahun yang lalu</p>
+      <div class="alx-big">${A.alexios}</div>
+      <div class="bubble big">Hai, wira muda! Nama saya <b>Alexios</b>, seorang panglima (<i>strategos</i>) Yunani purba. Lima Pingat Ajaib telah hilang! Mahukah kamu belayar bersama saya untuk mencarinya sambil belajar tentang pahlawan Yunani purba?</div>
+      <div class="histfact"><div class="hf-t">Tahukah Kamu?</div><p>Dahulu, Yunani bukan satu negara, tetapi ratusan <b>kota-negara</b> (<i>polis</i>) seperti <b>Athens</b> dan <b>Sparta</b>. Setiap polis mempunyai tentera sendiri, dan askar <b>hoplite</b> mereka berperang dalam formasi <b>phalanx</b> yang terkenal!</p></div>
+      <button class="btn big" id="startBtn">Mula Pengembaraan \ud83d\udea2</button>
+      <button class="btn ghost" id="manualBtn">\ud83d\udcd8 Manual Pengguna</button>
+      <button class="btn ghost" id="objBtn">\ud83c\udfaf Objektif Permainan</button>
+      <p class="hint">Sejarah Peperangan Yunani Purba</p>
+    </div></div>`;
+  $('#startBtn').onclick=()=>{SND.ensure();SND.resume();SND.startMusic();route('map');};
+  $('#manualBtn').onclick=()=>showManual();
+  $('#objBtn').onclick=()=>showObjektif();
+};
+/* ====================== MAP ====================== */
+const CHK=[
+  {id:'m1',x:120,y:300,t:'Misi 1',s:'Pertahanan Kota',medal:'defence'},
+  {id:'m2',x:300,y:150,t:'Misi 2',s:'Tentera & Phalanx',medal:'army'},
+  {id:'m3',x:500,y:270,t:'Misi 3',s:'Strategi Perang',medal:'strategy'},
+  {id:'m4',x:680,y:140,t:'Misi 4',s:'Kelengkapan Askar',medal:'equip'},
+  {id:'final',x:830,y:300,t:'Cabaran Akhir',s:'Panglima Agung',medal:'grand'}
+];
+function unlocked(idx){if(idx===0)return true;for(let j=0;j<idx;j++){const c=CHK[j];if(c.id==='final')continue;if(!S.done[c.id])return false;}return true;}
+routes.map=function(){
+  const total=4,doneN=['m1','m2','m3','m4'].filter(k=>S.done[k]).length;
+  const pct=Math.round(doneN/total*100);
+  const route_d='M120 300 Q210 200 300 150 Q400 180 500 270 Q590 180 680 140 Q760 200 830 300';
+  let pins='';
+  CHK.forEach((c,idx)=>{
+    const open=unlocked(idx);const fin=c.id!=='final'&&S.done[c.id];
+    const cls=fin?'pin done':(open?'pin open':'pin lock');
+    const icon=fin?'\u2b50':(open?(idx+1===5?'\ud83c\udfc6':(idx+1)):'\ud83d\udd12');
+    pins+=`<g class="${cls}" transform="translate(${c.x},${c.y})">
+      <circle r="30" class="pinbg"/>
+      <circle r="30" class="pinring"/>
+      <text class="pinnum" y="9">${icon}</text>
+      <g class="pinlabel"><rect x="-58" y="40" width="116" height="26" rx="13"/><text x="0" y="57">${c.t}</text></g>
+    </g>`;
+  });
+  const cards=CHK.map((c,idx)=>{
+    const open=unlocked(idx);const fin=c.id!=='final'&&S.done[c.id];
+    const isFinal=c.id==='final';
+    const badge=fin?'<span class="mcbadge done">\u2713 Selesai</span>':(open?`<span class="mcbadge open">${isFinal?'Cabaran Akhir':'Terbuka'}</span>`:'<span class="mcbadge lock">\ud83d\udd12 Terkunci</span>');
+    let btn;
+    if(!open){btn=`<button class="mcbtn" disabled>Terkunci</button>`;}
+    else if(fin){btn=`<button class="mcbtn ghost" data-go="${c.id}">Main Semula</button>`;}
+    else{btn=`<button class="mcbtn ${isFinal?'final':''}" data-go="${c.id}">Mula \u25b6</button>`;}
+    const cls=fin?'done':(isFinal&&open?'open final':(open?'open':'lock'))+(isFinal?' final':'');
+    return `<div class="misscard ${cls}"><div class="mcno">${idx+1===5?'\ud83c\udfc6':(idx+1)}</div><div class="mcinfo"><h3>${c.t}</h3><p>${c.s}</p>${badge}</div>${btn}</div>`;
+  }).join('');
+  mount(`<div class="mapwrap">
+    <div class="maphd">${speech('Inilah peta pengembaraan kita! Pilih misi yang terbuka di bawah peta untuk memulakannya. Kumpulkan kesemua 5 pingat!',true)}</div>
+    <div class="progbar"><div class="progfill" style="width:${pct}%"></div><span class="proglbl">${doneN}/${total} misi selesai</span></div>
+    <div class="mapsvg"><svg viewBox="0 0 920 440" preserveAspectRatio="xMidYMid meet">
+      ${A.mapBg}
+      <rect x="0" y="0" width="920" height="440" fill="url(#sea)"/>
+      <g opacity=".5" fill="#fff"><path d="M60 90 q20 -10 40 0 q20 10 0 14 h-40 q-20 -10 0 -14Z"/><path d="M700 60 q20 -10 40 0 q20 10 0 14 h-40 q-20 -10 0 -14Z"/></g>
+      <path d="M80 330 q60 -40 150 -30 q70 8 110 -20 q40 30 10 70 q-120 40 -270 10Z" fill="url(#land)" stroke="#7fa557" stroke-width="3"/>
+      <path d="M440 300 q60 -50 140 -30 q50 20 110 -10 q40 40 -10 80 q-180 40 -240 -40Z" fill="url(#land)" stroke="#7fa557" stroke-width="3"/>
+      <path d="M760 300 q50 -30 120 -10 l0 150 l-150 0 q-20 -70 30 -110Z" fill="url(#land)" stroke="#7fa557" stroke-width="3"/>
+      <path id="searoute" d="${route_d}" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="4 14" stroke-linecap="round" opacity=".9"/>
+      <g id="shipM">${A.shipMini}</g>
+      ${pins}
+    </svg></div>
+    <div class="maplegend"><span>\u2b50 Selesai</span><span>\ud83d\udd12 Terkunci</span><span>\ud83c\udfc6 Cabaran Akhir</span> \u2022 <a id="goJournal">\ud83d\udcd6 Jurnal Wira</a></div>
+    <div class="misscards">${cards}</div>
+  </div>`,true);
+  placeShip(doneN,total);
+  app.querySelectorAll('.mcbtn[data-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.go;route(id);}));
+  $('#goJournal').onclick=()=>route('journal');
+};
+function placeShip(done,total){
+  const path=$('#searoute');const ship=$('#shipM');if(!path||!ship)return;
+  const len=path.getTotalLength();
+  const seg=Math.min(done,4)/4;const p=path.getPointAtLength(len*seg*0.98+ (seg===0?10:0));
+  ship.setAttribute('transform',`translate(${p.x},${p.y}) scale(1.1)`);
+}
+/* ====================== MISSION SCAFFOLD ====================== */
+function runMission(cfg){
+  let stage=0;const stages=cfg.stages;
+  function go(){
+    if(stage>=stages.length){
+      S.done[cfg.id]=true;save();
+      if(!S.journal.includes(cfg.id)){S.journal.push(cfg.id);save();}
+      award(cfg.medal);
+      finishScreen();return;
+    }
+    const box=$('#stageBox');stages[stage](box,()=>{stage++;go();});
+  }
+  function finishScreen(){
+    const box=$('#stageBox');
+    box.innerHTML=`<div class="done-card"><div class="medimg">${A.medal(MEDALS[cfg.medal].col)}</div>
+      <h2>Misi Selesai! \ud83c\udf89</h2>
+      <p>${speech('Hebat sungguh, wira muda! Kamu telah memperoleh <b>'+MEDALS[cfg.medal].name+'</b>. Mari teruskan pengembaraan!',true)}</p>
+      <div class="row"><button class="btn" id="toMap">\ud83c\udfe0 Kembali ke Peta</button>${cfg.next?`<button class="btn ghost" id="toNext">Misi Seterusnya \u2192</button>`:''}</div></div>`;
+    $('#toMap').onclick=()=>route('map');
+    if(cfg.next)$('#toNext').onclick=()=>route(cfg.next);
+  }
+  mount(`<div class="misshd"><span class="misstag">${cfg.tag}</span><h2 class="misstitle">${cfg.title}</h2></div><div id="stageBox" class="stagebox"></div>`,true);
+  go();
+}
+/* intro stage factory */
+function introStage(html,btn){return (box,done)=>{box.innerHTML=`<div class="intro">${html}<div class="row"><button class="btn" id="introGo">${btn||'Mula \u2192'}</button></div></div>`;$('#introGo',box).onclick=done;};}
+/* quiz stage factory */
+function quizStage(questions,intro){return (box,done)=>{box.innerHTML=`${intro?`<p class="stginfo">${intro}</p>`:''}<div id="qMount"></div>`;QuizEngine($('#qMount',box),questions,{pts:10,onDone:(f,t)=>{toast('Kuiz selesai: '+f+'/'+t+' betul kali pertama');done();}});};}
+/* HOTSPOT stage: scene + clickable spots; pick exactly correct set */
+function hotspotStage(cfg){return (box,done)=>{
+  const need=cfg.spots.filter(s=>s.good).length;const picked=new Set();
+  box.innerHTML=`<div class="activity"><h3>${cfg.title}</h3><p class="stginfo">${cfg.info}</p>
+    <div class="scene">${cfg.scene}<svg class="spotlayer" viewBox="0 0 ${cfg.w} ${cfg.h}">${cfg.spots.map((s,i)=>`<g class="spot" data-i="${i}" transform="translate(${s.x},${s.y})"><circle r="26" class="spotc"/><text y="6">?</text></g>`).join('')}</svg></div>
+    <div class="hsfb" id="hsfb">Pilih <b>${need}</b> tempat terbaik.</div>
+    <div class="row"><button class="btn" id="hsCheck">Sahkan Pilihan</button></div></div>`;
+  box.querySelectorAll('.spot').forEach(g=>g.addEventListener('click',()=>{const i=+g.dataset.i;if(g.classList.contains('locked'))return;if(picked.has(i)){picked.delete(i);g.classList.remove('sel');}else{picked.add(i);g.classList.add('sel');}}));
+  $('#hsCheck',box).onclick=()=>{
+    let right=0,wrong=0;
+    cfg.spots.forEach((s,i)=>{const g=box.querySelector('.spot[data-i="'+i+'"]');if(picked.has(i)){if(s.good){right++;g.classList.add('good','locked');}else{wrong++;g.classList.add('bad');}}});
+    const fb=$('#hsfb',box);
+    if(right===need&&wrong===0){addScore(20);confetti();SND.correct();fb.innerHTML=`<span class="ok">\u2705 Tepat sekali! ${cfg.success}</span>`;box.querySelectorAll('.spot').forEach(g=>g.classList.add('locked'));$('#hsCheck',box).textContent='Teruskan \u2192';$('#hsCheck',box).onclick=done;}
+    else{fb.innerHTML=`<span class="no">Belum tepat. ${cfg.hint} Cuba lagi!</span>`;SND.wrong();setTimeout(()=>{picked.clear();box.querySelectorAll('.spot').forEach(g=>g.classList.remove('sel','bad'));},900);}
+  };
+};}
+
+/* SORT stage: items into bins */
+function sortStage(cfg){return (box,done)=>{
+  let cur=null;const placed={};
+  box.innerHTML=`<div class="activity"><h3>${cfg.title}</h3><p class="stginfo">${cfg.info}</p>
+    <div class="items" id="items">${cfg.items.map((it,i)=>`<button class="item" data-i="${i}">${it.icon||''}<span>${it.name}</span></button>`).join('')}</div>
+    <div class="bins">${cfg.bins.map((b,bi)=>`<div class="bin" data-b="${bi}"><div class="binhd">${b}</div><div class="bindrop" data-b="${bi}"></div></div>`).join('')}</div>
+    <div class="hsfb" id="sfb">Klik satu barang, kemudian klik bakul yang betul.</div>
+    <div class="row"><button class="btn" id="sCheck" disabled>Sahkan</button></div></div>`;
+  function refresh(){const n=Object.keys(placed).length;$('#sCheck',box).disabled=n<cfg.items.length;}
+  box.querySelectorAll('.item').forEach(b=>b.onclick=()=>{box.querySelectorAll('.item').forEach(x=>x.classList.remove('active'));b.classList.add('active');cur=+b.dataset.i;});
+  box.querySelectorAll('.bin').forEach(bin=>bin.onclick=()=>{if(cur==null)return;const bi=+bin.dataset.b;const it=cfg.items[cur];placed[cur]=bi;const drop=bin.querySelector('.bindrop');const chip=document.createElement('button');chip.className='chip';chip.innerHTML=it.name;chip.onclick=(e)=>{e.stopPropagation();delete placed[cur];};const srcBtn=box.querySelector('.item[data-i="'+cur+'"]');srcBtn.classList.add('used');srcBtn.disabled=true;drop.appendChild(chip);const ci=cur;chip.onclick=(e)=>{e.stopPropagation();delete placed[ci];chip.remove();srcBtn.classList.remove('used');srcBtn.disabled=false;refresh();};cur=null;box.querySelectorAll('.item').forEach(x=>x.classList.remove('active'));refresh();});
+  $('#sCheck',box).onclick=()=>{let ok=0;cfg.items.forEach((it,i)=>{if(placed[i]===it.bin)ok++;});const fb=$('#sfb',box);if(ok===cfg.items.length){addScore(20);confetti();SND.correct();fb.innerHTML='<span class="ok">\u2705 Semua betul! '+cfg.success+'</span>';$('#sCheck',box).textContent='Teruskan \u2192';$('#sCheck',box).onclick=done;}else{fb.innerHTML='<span class="no">'+ok+'/'+cfg.items.length+' betul. Betulkan yang salah dan cuba lagi!</span>';SND.wrong();}};
+};}
+/* VOCAB cards: flip to learn */
+function vocabStage(cfg){return (box,done)=>{
+  box.innerHTML=`<div class="activity"><h3>${cfg.title}</h3><p class="stginfo">${cfg.info}</p>
+    <div class="vcards">${cfg.cards.map((c,i)=>`<div class="vcard" data-i="${i}"><div class="vinner"><div class="vfront">${c.icon||''}<b>${c.term}</b><span class="vtap">Klik untuk buka</span></div><div class="vback">${c.def}</div></div></div>`).join('')}</div>
+    <div class="hsfb" id="vfb">Buka semua kad untuk belajar perkataan Yunani.</div>
+    <div class="row"><button class="btn" id="vGo" disabled>Teruskan \u2192</button></div></div>`;
+  const seen=new Set();
+  box.querySelectorAll('.vcard').forEach(c=>c.onclick=()=>{c.classList.toggle('flip');seen.add(+c.dataset.i);if(seen.size===cfg.cards.length){$('#vGo',box).disabled=false;$('#vfb',box).innerHTML='<span class="ok">Bagus! Kamu dah belajar semua perkataan.</span>';}});
+  $('#vGo',box).onclick=done;
+};}
+
+/* MATCH stage: term <-> meaning */
+function matchStage(cfg){return (box,done)=>{
+  const L=cfg.pairs.map((p,i)=>({t:p.t,id:i}));const R=shuffle(cfg.pairs.map((p,i)=>({d:p.d,id:i})));
+  let selL=null,matched=0;
+  box.innerHTML=`<div class="activity"><h3>${cfg.title}</h3><p class="stginfo">${cfg.info}</p>
+    <div class="matchwrap"><div class="mcol">${L.map(x=>`<button class="mitem lft" data-id="${x.id}">${x.t}</button>`).join('')}</div>
+    <div class="mcol">${R.map(x=>`<button class="mitem rgt" data-id="${x.id}">${x.d}</button>`).join('')}</div></div>
+    <div class="hsfb" id="mfb">Klik perkataan, kemudian klik maksudnya.</div></div>`;
+  box.querySelectorAll('.lft').forEach(b=>b.onclick=()=>{if(b.classList.contains('ok'))return;box.querySelectorAll('.lft').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');selL=b;});
+  box.querySelectorAll('.rgt').forEach(b=>b.onclick=()=>{if(b.classList.contains('ok')||!selL)return;if(b.dataset.id===selL.dataset.id){b.classList.add('ok');selL.classList.add('ok');selL.classList.remove('sel');selL=null;matched++;addScore(5);toast('+5 mata');SND.correct();if(matched===cfg.pairs.length){confetti();$('#mfb',box).innerHTML='<span class="ok">\u2705 Semua betul! '+(cfg.success||'')+'</span><div class="row"><button class="btn" id="mGo">Teruskan \u2192</button></div>';$('#mGo',box).onclick=done;}}else{b.classList.add('shake');selL.classList.remove('sel');const s=selL;selL=null;setTimeout(()=>b.classList.remove('shake'),500);SND.wrong();$('#mfb',box).innerHTML='<span class="no">Belum padan. Cuba pasangan lain!</span>';}});
+};}
+
+/* PHALANX puzzle: fill the shield wall (no gaps) */
+function phalanxStage(cfg){return (box,done)=>{
+  const N=8;const filled=new Array(N).fill(false);
+  function draw(){
+    box.innerHTML=`<div class="activity"><h3>Bina Dinding Phalanx</h3><p class="stginfo">Dalam formasi <b>phalanx</b>, askar berdiri rapat supaya perisai (hoplon) bertindih dan tiada ruang kosong. Klik setiap ruang kosong untuk menempatkan askar dan lengkapkan dinding perisai!</p>
+      <div class="phax">${filled.map((f,i)=>`<button class="slot ${f?'full':'empty'}" data-i="${i}">${f?A.hoplite:'<span class=\'plus\'>+</span>'}</button>`).join('')}</div>
+      <div class="hsfb" id="pfb">${filled.filter(x=>x).length}/${N} askar ditempatkan.</div></div>`;
+    box.querySelectorAll('.slot.empty').forEach(b=>b.onclick=()=>{filled[+b.dataset.i]=true;addScore(3);draw();check();});
+  }
+  function check(){if(filled.every(x=>x)){confetti();SND.correct();const fb=$('#pfb',box);fb.innerHTML='<span class="ok">\u2705 Dinding phalanx siap! Tiada askar boleh menembusinya.</span><div class="row"><button class="btn" id="pGo">Teruskan \u2192</button></div>';$('#pGo',box).onclick=done;}}
+  draw();
+};}
+/* ====================== MISSION 1: PERTAHANAN KOTA ====================== */
+routes.m1=function(){
+  const q=[
+    {img:A.hoplon,q:'Lihat gambar ini. Apakah nama perisai bulat besar askar Yunani?',opts:['Hoplon','Dory','Trireme'],ans:0,fb:'Betul! <b>Hoplon</b> ialah perisai bulat yang besar. Askar yang memegangnya dipanggil <b>hoplite</b>.'},
+    {img:A.helmet,q:'Askar Yunani memakai ini di kepala untuk melindungi diri. Apakah namanya?',opts:['Bakul','Topi keledar (helmet)','Mahkota raja'],ans:1,fb:'Betul! Topi keledar gangsa melindungi kepala dan muka askar semasa berperang.'},
+    {img:A.hoplite,q:'Askar Yunani purba yang memakai perisai besar dan membawa lembing dipanggil?',opts:['Hoplite','Nelayan','Petani'],ans:0,fb:'Betul! <b>Hoplite</b> ialah askar pejalan kaki Yunani yang terkenal.'},
+    {q:'Mengapa kota (polis) Yunani purba membina tembok tinggi?',opts:['Untuk cantik sahaja','Untuk melindungi penduduk daripada serangan musuh','Untuk menyimpan air hujan'],ans:1,fb:'Betul! Tembok tinggi menyukarkan musuh masuk dan melindungi orang di dalam kota.'},
+    {q:'Di manakah tempat paling lemah pada tembok kota yang perlu dikawal rapi?',opts:['Pintu gerbang','Bumbung rumah','Pasar'],ans:0,fb:'Betul! <b>Pintu gerbang</b> ialah tempat paling mudah diserang, jadi ia dikawal dengan ketat.'},
+    {q:'Semasa kota diserang, di manakah askar terbaik berdiri untuk bertahan?',opts:['Di dalam rumah','Di atas tembok kota','Di dalam laut'],ans:1,fb:'Betul! Berdiri di atas tembok memberi askar kelebihan untuk melihat dan melawan musuh dari atas.'},
+    {q:'Apakah tujuan menara pengawal di tembok kota?',opts:['Untuk tidur','Untuk melihat musuh dari jauh','Untuk memasak'],ans:1,fb:'Betul! Dari menara tinggi, pengawas boleh nampak musuh datang lebih awal dan memberi amaran.'},
+    {q:'Jika askar bertahan bersama-sama secara berkumpulan, mereka menjadi...',opts:['Lebih lemah','Lebih kuat dan selamat','Lebih mudah kalah'],ans:1,fb:'Betul! Bekerjasama menjadikan askar lebih kuat \u2014 inilah rahsia tentera Yunani!'}
+  ];
+  runMission({id:'m1',medal:'defence',next:'m2',tag:'Misi 1 \u2022 Pertahanan',title:'\ud83c\udff0 Mempertahankan Kota',
+    stages:[
+      introStage(`${speech('Selamat datang ke misi pertama! Dahulu, setiap bandar Yunani (dipanggil <b>polis</b>) dikelilingi <b>tembok</b> tinggi. Askar berdiri di atas tembok dan menjaga <b>pintu gerbang</b> untuk melindungi penduduk. Mari kita belajar cara mempertahankan kota!')}
+        <div class="infogrid"><div class="infobox">${A.helmet}<p>Topi keledar melindungi kepala</p></div><div class="infobox">${A.hoplon}<p>Hoplon melindungi badan</p></div><div class="infobox">${A.hoplite}<p>Hoplite menjaga tembok</p></div></div>
+        <div class="histfact"><div class="hf-t">Tahukah Kamu?</div><p>Kota <b>Athens</b> dilindungi oleh <b>Tembok Panjang</b> yang menyambungkannya ke pelabuhan <b>Piraeus</b> \u2014 panjangnya lebih 6 kilometer, supaya musuh tidak dapat memutuskan bekalan makanan!</p></div>`,'Mula Kuiz \u2192'),
+      quizStage(q,'Jawab soalan berikut. Jika salah, kamu boleh cuba lagi!'),
+      hotspotStage({title:'Tempatkan Pengawal Pertahanan',info:'Musuh sedang datang! Klik <b>3 tempat terbaik</b> untuk meletakkan askar bagi mempertahankan kota, kemudian tekan Sahkan.',
+        w:400,h:240,
+        scene:`<svg class="scenebg" viewBox="0 0 400 240"><rect width="400" height="240" fill="#cdeef0"/><rect width="400" height="240" fill="#bfe3f0"/><rect y="150" width="400" height="90" fill="#9BBF75"/><rect x="40" y="70" width="320" height="90" fill="#d9c49a" stroke="#b79b6a" stroke-width="4"/><g fill="#c9b07e">${[0,1,2,3,4,5,6].map(i=>`<rect x="${48+i*46}" y="58" width="26" height="16"/>`).join('')}</g><rect x="175" y="110" width="50" height="50" fill="#8a5a2b"/><rect x="60" y="30" width="40" height="44" fill="#d9c49a" stroke="#b79b6a" stroke-width="3"/><rect x="300" y="30" width="40" height="44" fill="#d9c49a" stroke="#b79b6a" stroke-width="3"/></svg>`,
+        spots:[{x:80,y:46,good:true},{x:320,y:46,good:true},{x:200,y:95,good:true},{x:200,y:200,good:false},{x:60,y:200,good:false},{x:340,y:200,good:false}],
+        success:'Kamu letak pengawal di atas menara dan di pintu gerbang \u2014 tempat paling penting!',
+        hint:'Tempat terbaik ialah di atas menara pengawas dan betul-betul di atas pintu gerbang.'})
+    ]});
+};
+/* ====================== MISSION 2: TENTERA & PHALANX ====================== */
+routes.m2=function(){
+  const q=[
+    {q:'Apakah itu formasi <b>phalanx</b>?',opts:['Askar berlari berselerak','Askar berdiri rapat dengan perisai bertindih','Askar bersembunyi di dalam gua'],ans:1,fb:'Betul! <b>Phalanx</b> ialah barisan askar yang berdiri rapat, perisai bertindih seperti dinding yang kuat.'},
+    {q:'Senjata panjang yang digunakan hoplite untuk mencucuk musuh dari jauh ialah?',opts:['Dory (lembing)','Xiphos (pedang pendek)','Hoplon (perisai)'],ans:0,fb:'Betul! <b>Dory</b> ialah lembing panjang. Askar di barisan hadapan menghalakan dory ke arah musuh.'},
+    {q:'Mengapa phalanx sangat kuat?',opts:['Kerana askar menjerit kuat','Kerana semua askar bekerjasama dan saling melindungi','Kerana mereka memakai baju berwarna'],ans:1,fb:'Betul! Dalam phalanx, setiap askar melindungi kawan di sebelahnya. Kerjasama membuat mereka susah dikalahkan!'}
+  ];
+  runMission({id:'m2',medal:'army',next:'m3',tag:'Misi 2 \u2022 Tentera',title:'\u2694\ufe0f Tentera Hoplite & Phalanx',
+    stages:[
+      introStage(`${speech('Sekarang mari kita belajar tentang tentera Yunani! Askar dipanggil <b>hoplite</b>. Mereka berperang bersama dalam formasi istimewa bernama <b>phalanx</b>. Mula-mula, mari belajar beberapa perkataan Yunani penting.')}
+        <div class="histfact"><div class="hf-t">Tahukah Kamu?</div><p>Dalam <b>Pertempuran Marathon</b> (490 SM), tentera hoplite <b>Athens</b> yang lebih kecil berjaya mengalahkan tentera <b>Parsi</b> yang jauh lebih besar \u2014 berkat kekuatan formasi <b>phalanx</b>!</p></div>`,'Belajar Perkataan \u2192'),
+      vocabStage({title:'Kad Perkataan Yunani',info:'Klik setiap kad untuk membukanya dan belajar maksudnya.',
+        cards:[
+          {icon:A.hoplite,term:'Hoplite',def:'Askar pejalan kaki Yunani yang memakai perisai dan topi keledar.'},
+          {icon:A.hoplon,term:'Hoplon',def:'Perisai bulat besar yang melindungi badan askar.'},
+          {icon:A.dory,term:'Dory',def:'Lembing panjang untuk mencucuk musuh dari jauh.'},
+          {icon:A.xiphos,term:'Xiphos',def:'Pedang pendek yang digunakan dalam pertempuran dekat.'},
+          {icon:A.hoplite,term:'Phalanx',def:'Formasi barisan askar yang rapat dengan perisai bertindih.'},
+          {icon:A.trireme,term:'Trireme',def:'Kapal perang Yunani yang laju dengan tiga baris pendayung.'}
+        ]}),
+      matchStage({title:'Padankan Perkataan',info:'Klik perkataan Yunani, kemudian klik maksud yang betul.',success:'Kamu berjaya memahami istilah dan bahasa Yunani!',
+        pairs:[
+          {t:'Hoplite',d:'Askar pejalan kaki'},
+          {t:'Dory',d:'Lembing panjang'},
+          {t:'Xiphos',d:'Pedang pendek'},
+          {t:'Hoplon',d:'Perisai bulat'},
+          {t:'Phalanx',d:'Formasi barisan rapat'}
+        ]}),
+      phalanxStage({}),
+      quizStage(q,'Soalan terakhir untuk misi ini!')
+    ]});
+};
+/* ====================== MISSION 3: STRATEGI PERANG ====================== */
+routes.m3=function(){
+  const q=[
+    {q:'<b>Padang luas dan rata.</b> Formasi apakah yang paling baik untuk tentera hoplite di sini?',opts:['Phalanx yang besar dan rapat','Berlari seorang diri','Bersembunyi di dalam lubang'],ans:0,fb:'Betul! Di tanah rata dan luas, <b>phalanx</b> boleh bergerak rapat tanpa pecah \u2014 inilah tempat terbaik untuknya.'},
+    {q:'<b>Tanah berbukit dan tidak rata.</b> Apa masalah untuk phalanx di sini?',opts:['Tiada masalah langsung','Barisan mudah pecah dan muncul ruang kosong','Askar menjadi lebih laju'],ans:1,fb:'Betul! Di tanah tidak rata, barisan phalanx mudah terpisah dan timbul celah \u2014 ini bahaya. Panglima bijak elak bertempur di sini.'},
+    {q:'<b>Laluan sempit di antara dua gunung.</b> Mengapa tempat ini berguna untuk bertahan?',opts:['Sebab ramai musuh boleh masuk serentak','Sebab hanya sedikit musuh boleh masuk, jadi askar sedikit pun boleh bertahan','Sebab senang melarikan diri'],ans:1,fb:'Betul! Di laluan sempit, musuh tak boleh masuk ramai sekaligus. Jadi sekumpulan kecil askar berani boleh menahan tentera yang besar!'}
+  ];
+  runMission({id:'m3',medal:'strategy',next:'m4',tag:'Misi 3 \u2022 Strategi',title:'\ud83e\udde0 Strategi & Taktik Perang',
+    stages:[
+      introStage(`${speech('Panglima yang hebat bukan sahaja kuat \u2014 mereka juga bijak berfikir! <b>Strategi</b> ialah rancangan besar untuk menang perang. <b>Taktik</b> pula cara memilih tempat dan formasi yang betul untuk setiap pertempuran. Tempat berperang sangat penting!')}
+        <div class="infogrid"><div class="infobox"><div class="terr flat"></div><p>Padang rata: sesuai untuk phalanx</p></div><div class="infobox"><div class="terr hill"></div><p>Bukit: phalanx mudah pecah</p></div><div class="infobox"><div class="terr narrow"></div><p>Laluan sempit: mudah dipertahankan</p></div></div>
+        <div class="histfact"><div class="hf-t">Tahukah Kamu?</div><p>Pada tahun <b>480 SM</b>, Raja <b>Leonidas</b> dan 300 askar <b>Sparta</b> bertahan di laluan sempit <b>Thermopylae</b> menentang tentera Parsi yang amat ramai \u2014 contoh terbaik memilih tempat yang betul untuk berperang!</p></div>`,'Mula Cabaran \u2192'),
+      quizStage(q,'Fikir seperti seorang panglima! Pilih keputusan terbaik untuk setiap keadaan.')
+    ]});
+};
+/* ====================== MISSION 4: KELENGKAPAN ASKAR ====================== */
+routes.m4=function(){
+  const q=[
+    {img:A.dory,q:'Senjata apakah ini?',opts:['Dory (lembing panjang)','Xiphos (pedang)','Hoplon (perisai)'],ans:0,fb:'Betul! <b>Dory</b> ialah lembing panjang untuk menyerang dari jauh.'},
+    {img:A.xiphos,q:'Senjata apakah ini?',opts:['Dory','Xiphos (pedang pendek)','Trireme'],ans:1,fb:'Betul! <b>Xiphos</b> ialah pedang pendek untuk pertempuran dekat apabila lembing patah.'},
+    {img:A.hoplon,q:'Kelengkapan apakah ini?',opts:['Hoplon (perisai)','Topi keledar','Kapal'],ans:0,fb:'Betul! <b>Hoplon</b> ialah perisai bulat untuk melindungi badan.'},
+    {img:A.trireme,q:'Apakah ini?',opts:['Rumah','Trireme (kapal perang)','Kereta kuda'],ans:1,fb:'Betul! <b>Trireme</b> ialah kapal perang laju Yunani dengan tiga baris pendayung.'},
+    {q:'Kelengkapan manakah yang melindungi askar (bukan untuk menyerang)?',opts:['Dory','Hoplon dan topi keledar','Xiphos'],ans:1,fb:'Betul! <b>Hoplon</b> dan <b>topi keledar</b> ialah kelengkapan melindungi. Dory dan xiphos pula senjata menyerang.'}
+  ];
+  runMission({id:'m4',medal:'equip',next:'final',tag:'Misi 4 \u2022 Kelengkapan',title:'\ud83d\udee1\ufe0f Kelengkapan Askar Yunani',
+    stages:[
+      introStage(`${speech('Seorang hoplite membawa banyak kelengkapan! Ada yang untuk <b>melindungi</b> diri, ada yang untuk <b>menyerang</b> musuh, dan ada pula untuk berperang di <b>laut</b>. Mari kita kenali satu persatu.')}
+        <div class="infogrid g4"><div class="infobox">${A.hoplon}<p><b>Hoplon</b><br>Perisai (lindung)</p></div><div class="infobox">${A.dory}<p><b>Dory</b><br>Lembing (serang)</p></div><div class="infobox">${A.xiphos}<p><b>Xiphos</b><br>Pedang (serang)</p></div><div class="infobox">${A.trireme}<p><b>Trireme</b><br>Kapal (laut)</p></div></div>
+        <div class="histfact"><div class="hf-t">Tahukah Kamu?</div><p>Perisai <b>hoplon</b> seberat lebih 7 kilogram diperbuat daripada kayu dan tembaga. Askar memegangnya di lengan kiri \u2014 jadi ia turut melindungi kawan di sebelah kirinya dalam barisan phalanx!</p></div>`,'Mula Kuiz \u2192'),
+      quizStage(q,'Kenal pasti setiap kelengkapan!'),
+      sortStage({title:'Susun Kelengkapan ke Bakul',info:'Klik satu barang, kemudian klik bakul yang betul: <b>Melindungi</b>, <b>Menyerang</b>, atau <b>Laut</b>.',
+        bins:['\ud83d\udee1\ufe0f Melindungi','\u2694\ufe0f Menyerang','\ud83c\udf0a Laut'],
+        items:[
+          {name:'Hoplon',icon:'',bin:0},
+          {name:'Topi keledar',icon:'',bin:0},
+          {name:'Dory',icon:'',bin:1},
+          {name:'Xiphos',icon:'',bin:1},
+          {name:'Trireme',icon:'',bin:2}
+        ],
+        success:'Kamu tahu untuk guna setiap kelengkapan dengan betul!'})
+    ]});
+};
+/* ====================== HERO'S JOURNAL ====================== */
+const JOURNAL={
+  m1:{t:'Pertahanan Kota',med:'defence',pts:['Bandar Yunani (polis) dilindungi tembok tinggi.','Pintu gerbang & menara ialah tempat paling penting dikawal.','Askar bertahan lebih kuat apabila bekerjasama.']},
+  m2:{t:'Tentera & Phalanx',med:'army',pts:['Hoplite ialah askar pejalan kaki Yunani.','Phalanx = barisan rapat dengan perisai bertindih.','Dory (lembing) & xiphos (pedang) ialah senjata mereka.']},
+  m3:{t:'Strategi Perang',med:'strategy',pts:['Strategi = rancangan besar; taktik = pilihan formasi & tempat.','Padang rata sesuai untuk phalanx.','Laluan sempit mudah dipertahankan askar sedikit.']},
+  m4:{t:'Kelengkapan Askar',med:'equip',pts:['Hoplon & topi keledar untuk melindungi.','Dory & xiphos untuk menyerang.','Trireme ialah kapal perang di laut.']}
+};
+routes.journal=function(){
+  const items=Object.keys(JOURNAL).map(k=>{const j=JOURNAL[k];const got=S.done[k];return `<div class="jcard ${got?'':'locked'}"><div class="jmed">${got?A.medal(MEDALS[j.med].col):'<div class=\'jlock\'>\ud83d\udd12</div>'}</div><div class="jbody"><h3>${j.t}</h3>${got?'<ul>'+j.pts.map(p=>'<li>'+p+'</li>').join('')+'</ul>':'<p class="jhint">Selesaikan misi ini untuk membuka catatan.</p>'}</div></div>`;}).join('');
+  mount(`<div class="journal"><div class="misshd"><span class="misstag">Koleksi</span><h2 class="misstitle">\ud83d\udcd6 Jurnal Wira</h2></div>
+    ${speech('Inilah jurnal kita! Setiap kali kamu selesaikan misi, kamu memperoleh satu pingat dan catatan baru. Lihat apa yang telah kamu pelajari!',true)}
+    <div class="jgrid">${items}</div>
+    <div class="row"><button class="btn" id="jMap">\ud83c\udfe0 Kembali ke Peta</button></div></div>`,true);
+  $('#jMap').onclick=()=>route('map');
+};
+/* ====================== FINAL CHALLENGE (STRATEGY BATTLE) ====================== */
+routes.final=function(){
+  if(!(S.done.m1&&S.done.m2&&S.done.m3&&S.done.m4)){toast('Selesaikan keempat-empat misi dahulu!');route('map');return;}
+  if(!S.finalEarned)S.finalEarned={};
+  finalCinematic(()=>warCouncil());
+};
+/* the 4 strategic decisions — scenario: outnumbered army */
+const WAR=[
+  {key:'terrain',icon:'\ud83d\uddfa\ufe0f',q:'1. Di manakah kita patut berperang?',ans:1,
+    opts:[
+      {t:'Padang rata terbuka',d:'Musuh yang ramai boleh mengepung kita dari semua arah.'},
+      {t:'Laluan sempit antara gunung',d:'Hanya sedikit musuh boleh masuk serentak, jadi bilangan kita yang kecil tidak menjadi masalah.'},
+      {t:'Pantai berpasir terbuka',d:'Pasir melambatkan pergerakan dan mudah dikepung.'}
+    ],fb:'Di <b>laluan sempit</b>, musuh tidak boleh masuk ramai sekaligus \u2014 inilah rahsia menang walaupun kita sedikit!'},
+  {key:'formation',icon:'\ud83d\udee1\ufe0f',q:'2. Formasi apakah yang kita gunakan?',ans:0,
+    opts:[
+      {t:'Phalanx (barisan rapat, perisai bertindih)',d:'Perisai bertindih membentuk dinding yang kuat dan susah ditembusi.'},
+      {t:'Berselerak sendiri-sendiri',d:'Setiap askar bersendirian dan mudah dikalahkan.'},
+      {t:'Satu barisan nipis yang panjang',d:'Barisan nipis mudah pecah apabila diserang.'}
+    ],fb:'<b>Phalanx</b> menjadikan askar saling melindungi \u2014 dinding perisai yang hebat!'},
+  {key:'weapon',icon:'\u2694\ufe0f',q:'3. Senjata utama di barisan hadapan?',ans:0,
+    opts:[
+      {t:'Dory (lembing panjang)',d:'Lembing panjang boleh mencucuk musuh sebelum mereka sampai kepada kita.'},
+      {t:'Xiphos sahaja (pedang pendek)',d:'Pedang pendek hanya berguna apabila musuh sudah terlalu dekat.'},
+      {t:'Tanpa senjata',d:'Tidak mungkin menang tanpa senjata!'}
+    ],fb:'<b>Dory</b> yang panjang membolehkan barisan hadapan menyerang musuh dari jauh dahulu.'},
+  {key:'tactic',icon:'\ud83e\udde0',q:'4. Apakah taktik kita?',ans:0,
+    opts:[
+      {t:'Bertahan rapat & maju serentak',d:'Bergerak bersama menjaga dinding perisai sentiasa kuat.'},
+      {t:'Setiap askar menyerang sendiri',d:'Barisan akan pecah dan timbul ruang kosong.'},
+      {t:'Berundur terus tanpa melawan',d:'Menyerah kalah tanpa mencuba.'}
+    ],fb:'<b>Bertahan rapat dan maju serentak</b> memastikan phalanx kekal kuat sehingga musuh berundur.'}
+];
+/* war council: student makes the choices */
+function warCouncil(){
+  const picks={};
+  mount(`<div class="misshd"><span class="misstag gold">Cabaran Akhir</span><h2 class="misstitle">\ud83c\udfc6 Misi Perang Panglima</h2></div>
+    <div class="stagebox">
+      ${speech('Wira muda, tentera musuh <b>tiga kali lebih ramai</b> daripada kita! Sebagai panglima, buat keputusan bijak. Pilih tempat, formasi, senjata dan taktik yang terbaik. Keputusan kamu akan menentukan siapa menang!',true)}
+      <div class="council" id="council">
+        ${WAR.map((d,di)=>`<div class="decision" data-d="${di}"><div class="dechead"><span class="decicon">${d.icon}</span>${d.q}</div><div class="decopts">${d.opts.map((o,oi)=>`<button class="decopt" data-d="${di}" data-o="${oi}"><b>${o.t}</b><span>${o.d}</span></button>`).join('')}</div></div>`).join('')}
+      </div>
+      <div class="hsfb" id="cfb">Buat kesemua 4 pilihan, kemudian lancarkan serangan!</div>
+      <div class="row"><button class="btn big" id="launch" disabled>\u2694\ufe0f Lancarkan Serangan!</button></div>
+    </div>`,true);
+  const box=$('#council');
+  box.querySelectorAll('.decopt').forEach(b=>b.onclick=()=>{const di=+b.dataset.d,oi=+b.dataset.o;picks[di]=oi;box.querySelectorAll('.decopt[data-d="'+di+'"]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');if(Object.keys(picks).length===WAR.length){$('#launch').disabled=false;$('#cfb').innerHTML='<span class="ok">Semua keputusan dibuat! Lancarkan serangan apabila sedia.</span>';}});
+  $('#launch').onclick=()=>battleResolve(picks);
+}
+/* resolve: score, play battle animation, show outcome */
+function battleResolve(picks){
+  let correct=0;const wrongList=[];
+  WAR.forEach((d,di)=>{if(picks[di]===d.ans){correct++;if(!S.finalEarned[d.key]){S.finalEarned[d.key]=true;addScore(15);}}else{wrongList.push(d);}});
+  const win=correct===WAR.length;save();
+  playBattle(win,()=>battleOutcome(win,correct,wrongList));
+}
+/* cinematic lead-in: Alexios leads a marching phalanx into the final battle */
+function finalCinematic(onStart){
+  const soldiers=[0,1,2,3,4].map(i=>`<div class="march soldier" style="animation-delay:${0.25+i*0.22}s">${A.hoplite}</div>`).join('');
+  const dust=[0,1,2].map(i=>`<div class="fdust" style="left:${90+i*120}px;animation-delay:${i*0.5}s"></div>`).join('');
+  mount(`<div class="misshd"><span class="misstag gold">Cabaran Akhir</span><h2 class="misstitle">\ud83c\udfc6 Ujian Panglima Agung</h2></div>
+    <div class="finalscene" id="fscene">
+      <button class="skipf" id="fskip">Langkau \u00bb</button>
+      <div class="fsun"></div><div class="fhills"></div><div class="fground"></div>
+      <span class="fspark" style="top:70px;left:24%">\u2728</span><span class="fspark" style="top:96px;right:22%;animation-delay:.6s">\u2728</span>
+      ${dust}
+      <div class="ftroops"><div class="march m-alx" style="animation-delay:.05s">${A.alexios}</div>${soldiers}</div>
+      <div class="fbanner" id="fbanner"><h2>Pertempuran Terakhir!</h2><p>Pimpin tenteramu ke medan akhir, wira muda!</p></div>
+    </div>
+    <div class="finalcta"><button class="btn big" id="fStart">\u2694\ufe0f Mula Misi Perang \u2192</button></div>`,true);
+  const scene=$('#fscene');
+  requestAnimationFrame(()=>{scene.querySelectorAll('.march').forEach(m=>m.classList.add('go'));setTimeout(()=>{const b=$('#fbanner');if(b)b.classList.add('go');},1500);});
+  $('#fStart').onclick=onStart;
+  $('#fskip').onclick=onStart;
+};
+/* play the battle animation: two armies clash, one side wins */
+function playBattle(win,done){
+  const ally=[A.alexios,A.hoplite,A.hoplite,A.hoplite].map((s,i)=>`<div class="unit${i===0?' cmd':''}" style="--d:${i*0.12}s">${s}</div>`).join('');
+  const foe=[A.enemy,A.enemy,A.enemy,A.enemy].map((s,i)=>`<div class="unit" style="--d:${i*0.12}s">${s}</div>`).join('');
+  mount(`<div class="misshd"><span class="misstag gold">Cabaran Akhir</span><h2 class="misstitle">\u2694\ufe0f Pertempuran Bermula!</h2></div>
+    <div class="battlescene" id="bscene">
+      <div class="fsun"></div><div class="fhills"></div><div class="fground"></div>
+      <div class="army ally">${ally}</div>
+      <div class="army foe">${foe}</div>
+      <div class="clashfx">\u2694\ufe0f</div>
+      <div class="battlebanner" id="bbanner"></div>
+    </div>
+    <p class="battlestatus" id="bstatus">Kedua-dua tentera berarak ke medan perang\u2026</p>`,true);
+  const scene=$('#bscene');
+  setTimeout(()=>{scene.classList.add('approach');$('#bstatus').textContent='Pasukan bertembung di tengah medan!';},500);
+  setTimeout(()=>{scene.classList.add('clash');},1700);
+  setTimeout(()=>{
+    scene.classList.remove('clash');scene.classList.add(win?'win':'lose');
+    const bn=$('#bbanner');
+    if(win){bn.innerHTML='<div class="bwin">\ud83c\udf89 KEMENANGAN!</div>';$('#bstatus').textContent='Dinding phalanx kita menolak musuh berundur!';confetti();SND.ding();}
+    else{bn.innerHTML='<div class="blose">Musuh menang kali ini\u2026</div>';$('#bstatus').textContent='Barisan kita pecah dan musuh menembusi pertahanan.';SND.wrong();}
+    bn.classList.add('go');
+  },2600);
+  setTimeout(done,4300);
+}
+/* show outcome panel after the battle animation */
+function battleOutcome(win,correct,wrongList){
+  if(win){
+    if(!S.finalWin){S.finalWin=true;addScore(40);save();}
+    mount(`<div class="misshd"><span class="misstag gold">Cabaran Akhir</span><h2 class="misstitle">\ud83c\udfc6 Keputusan Pertempuran</h2></div>
+      <div class="stagebox outcome win">
+        <div class="medimg">${A.medal(MEDALS.grand.col)}</div>
+        <h2>\ud83c\udf89 Kemenangan Gemilang!</h2>
+        ${speech('Hebat sungguh, panglima muda! Kesemua keputusan kamu tepat. Dengan memilih <b>laluan sempit</b>, formasi <b>phalanx</b>, lembing <b>dory</b> dan taktik bertahan rapat, tentera kecil kita berjaya mengalahkan musuh yang jauh lebih ramai! Inilah kebijaksanaan seorang panglima sejati.',true)}
+        <div class="row"><button class="btn" id="toRes">Lihat Keputusan Akhir \u2192</button></div>
+      </div>`,true);
+    award('grand');
+    $('#toRes').onclick=()=>route('results');
+  }else{
+    const tips=wrongList.map(d=>`<li>${d.fb}</li>`).join('');
+    mount(`<div class="misshd"><span class="misstag gold">Cabaran Akhir</span><h2 class="misstitle">\u2694\ufe0f Keputusan Pertempuran</h2></div>
+      <div class="stagebox outcome lose">
+        <h2>Jangan putus asa, wira muda!</h2>
+        ${speech('Pertempuran ini belum berjaya. Kamu betul <b>'+correct+'/4</b> keputusan. Panglima hebat belajar daripada kesilapan \u2014 baiki pilihan kamu dan cuba lagi! Jika kamu memilih untuk teruskan, kamu tetap tamat tetapi markah akan lebih rendah.',true)}
+        <div class="tips"><p class="tipshd">\ud83d\udca1 Panduan untuk menang:</p><ul>${tips}</ul></div>
+        <div class="row"><button class="btn" id="retry">\ud83d\udd04 Cuba Semula</button><button class="btn ghost" id="accept">Terima & Teruskan</button></div>
+      </div>`,true);
+    $('#retry').onclick=()=>warCouncil();
+    $('#accept').onclick=()=>{award('grand');setTimeout(()=>route('results'),400);};
+  }
+}
+/* ====================== RESULTS ====================== */
+function rankOf(sc,medals){
+  if(medals>=5&&sc>=360)return {name:'Wira Yunani',emo:'\ud83c\udfc6',col:'#FFD166',msg:'Luar biasa! Kamu ialah panglima Yunani sejati yang berani dan bijak!'};
+  if(sc>=270)return {name:'Ahli Strategi Muda',emo:'\ud83e\udde0',col:'#FF956B',msg:'Hebat! Kamu berfikir seperti seorang panglima yang bijak.'};
+  if(sc>=170)return {name:'Askar Bijak',emo:'\u2694\ufe0f',col:'#2878B5',msg:'Bagus sekali! Kamu seorang askar yang pandai dan gigih.'};
+  return {name:'Penjelajah Yunani',emo:'\ud83e\udded',col:'#48C9B0',msg:'Syabas kerana menamatkan pengembaraan! Teruskan belajar, wira muda.'};
+}
+routes.results=function(){
+  const medals=Object.keys(S.medals).filter(k=>S.medals[k]).length;
+  const r=rankOf(S.score,medals);
+  const medRow=Object.keys(MEDALS).map(k=>`<div class="rmed ${S.medals[k]?'':'off'}"><div class="rmimg">${S.medals[k]?A.medal(MEDALS[k].col):'<div class=\'jlock\'>\ud83d\udd12</div>'}</div><span>${MEDALS[k].name}</span></div>`).join('');
+  confetti();
+  mount(`<div class="results">
+    <div class="rankcard" style="--rc:${r.col}"><div class="rankemo">${r.emo}</div><p class="ranklbl">Pangkat Kamu</p><h1 class="rankname">${r.name}</h1><div class="bigscore">${S.score} <span>mata</span></div></div>
+    ${speech(r.msg,true)}
+    <h3 class="rsec">Pingat Dikumpulkan (${medals}/5)</h3>
+    <div class="rmedrow">${medRow}</div>
+    <div class="reflect"><h3>\ud83d\udcad Renungan Wira</h3><p>Apakah perkara paling menarik yang kamu pelajari tentang pahlawan Yunani purba? Fikir sejenak \u2014 mungkin tentang phalanx yang kuat, atau strategi bijak di laluan sempit!</p>
+      <div class="reflbtns"><button class="reflb">Formasi phalanx yang kuat</button><button class="reflb">Strategi memilih tempat</button><button class="reflb">Kelengkapan askar</button><button class="reflb">Mempertahankan kota</button></div>
+      <div class="reflmsg" id="reflmsg"></div></div>
+    <div class="row"><button class="btn" id="rMap">\ud83c\udfe0 Peta</button><button class="btn ghost" id="rJournal">\ud83d\udcd6 Jurnal</button><button class="btn warn" id="rReplay">\ud83d\udd04 Main Semula</button></div>
+  </div>`,true);
+  app.querySelectorAll('.reflb').forEach(b=>b.onclick=()=>{app.querySelectorAll('.reflb').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');$('#reflmsg').innerHTML='<span class="ok">Pilihan yang bagus! \u201c'+b.textContent+'\u201d memang penting dalam dunia pahlawan Yunani. \ud83c\udf1f</span>';});
+  $('#rMap').onclick=()=>route('map');
+  $('#rJournal').onclick=()=>route('journal');
+  $('#rReplay').onclick=()=>{if(confirm('Mula semula pengembaraan dari awal? Semua mata dan pingat akan direset.')){S=JSON.parse(JSON.stringify(DEF_STATE));save();route('opening');}};
+};
+
+/* ====================== BOOT ====================== */
+if(!location.hash)location.hash='#opening';
+render();
+window.addEventListener('pointerdown',function onceStart(){SND.ensure();SND.resume();if(SND.on&&!SND.playing)SND.startMusic();window.removeEventListener('pointerdown',onceStart);});
+/* global click sound on interactive elements */
+document.addEventListener('click',function(e){
+  const el=e.target.closest('button,a,.opt,.decopt,.item,.bin,.spot,.vcard,.mitem,.slot,.reflb,.chip,.tbtn,.medchip');
+  if(el)SND.click();
+},true);
+/* end */
+</script>
+</body>
+</html>
